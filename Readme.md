@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Руслан Бреев](https://up.htmlacademy.ru/ecmascript/9/user/488939).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Шершнев](https://up.htmlacademy.ru/ecmascript/9/user/587797).
 
 ---
 

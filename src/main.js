@@ -1,4 +1,4 @@
-import {filmCard} from "./data";
+import {filmCards} from "./data";
 import {createSearchTemplate} from './components/search';
 import {createProfileRatingTemplate} from "./components/profile-rating";
 import {createMenuTemplate} from "./components/menu";
@@ -7,9 +7,6 @@ import {createFilmsListTemplate} from "./components/films-list";
 import {createFilmCardTemplate} from "./components/film-card";
 import {createShowMoreButtonTemplate} from "./components/show-more-button";
 // import {createFilmDetailsTemplate} from "./components/film-details";
-
-const GENERAL_FILMS_AMOUNT = 5;
-const EXTRA_FILMS_AMOUNT = 2;
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
@@ -28,13 +25,13 @@ const mainFilmsListElement = document.querySelector(`.films-list`);
 const mainFilmsListContainerElement = mainFilmsListElement.querySelector(`.films-list__container`);
 
 renderElement(mainFilmsListElement, createShowMoreButtonTemplate());
-renderElement(mainFilmsListContainerElement, createFilmCardTemplate(), `beforeend`, GENERAL_FILMS_AMOUNT);
+renderElement(mainFilmsListContainerElement, createFilmCardTemplate(), `beforeend`, filmCards.length);
 
 const extraFilmsListElements = Array.from(document.querySelectorAll(`.films-list--extra`));
 
 extraFilmsListElements.forEach(function (filmsList) {
   const container = filmsList.querySelector(`.films-list__container`);
-  renderElement(container, createFilmCardTemplate(), `beforeend`, EXTRA_FILMS_AMOUNT);
+  renderElement(container, createFilmCardTemplate(), `beforeend`, 2);
 });
 
 // renderElement(document.body, createFilmDetailsTemplate());

@@ -1,14 +1,16 @@
+import {getFilmCard} from "../data";
+
 export const createFilmCardTemplate = () => `<article class="film-card">
-          <h3 class="film-card__title">The Dance of Life</h3>
-          <p class="film-card__rating">8.3</p>
+          <h3 class="film-card__title">${getFilmCard().titles}</h3>
+          <p class="film-card__rating">${getFilmCard().rating}</p>
           <p class="film-card__info">
-            <span class="film-card__year">1929</span>
-            <span class="film-card__duration">1h 55m</span>
-            <span class="film-card__genre">Musical</span>
+            <span class="film-card__year">${getFilmCard().year}</span>
+            <span class="film-card__duration">${getFilmCard().duration}</span>
+            <span class="film-card__genre">${Array.from(getFilmCard().genres)[Math.floor(Math.random() * Array.from(getFilmCard().genres).length)]}</span>
           </p>
-          <img src="./images/posters/the-dance-of-life.jpg" alt="" class="film-card__poster">
-          <p class="film-card__description">Burlesque comic Ralph "Skid" Johnson (Skelly), and specialty dancer Bonny Lee King (Carroll), end up together on a cold, rainy night at a tr…</p>
-          <a class="film-card__comments">5 comments</a>
+          <img src=${getFilmCard().posters} alt="" class="film-card__poster">
+          <p class="film-card__description">${getFilmCard().description}</p>
+          <a class="film-card__comments">${getFilmCard().commentsAmount}</a>
           <form class="film-card__controls">
             <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
             <button class="film-card__controls-item button film-card__controls-item--mark-as-watched">Mark as watched</button>

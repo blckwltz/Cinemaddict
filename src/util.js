@@ -1,11 +1,19 @@
-const getRandom = (max, min = 0) => {
+const getRandomNumber = (max, min = 0) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
-const getRating = () => {
-  const firstDigit = getRandom(10, 1);
-  return firstDigit < 10 ? `${firstDigit}.${getRandom(9)}` : `${firstDigit}.0`;
+const shuffleList = (list) => {
+  for (let i = 0; i < list.length; i += 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [list[i], list[j]] = [list[j], list[i]];
+  }
+  return list;
+};
+const getRandomItem = (list) => {
+  const array = Array.from(list);
+  return array[getRandomNumber(array.length - 1)];
 };
 
-export {getRandom, getRating};
+
+export {getRandomNumber, shuffleList, getRandomItem};

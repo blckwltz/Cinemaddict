@@ -15,5 +15,4 @@ const getRandomItem = (list) => {
   return array[getRandomNumber(array.length - 1)];
 };
 
-
 export {getRandomNumber, shuffleList, getRandomItem};

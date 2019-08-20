@@ -1,10 +1,11 @@
 import {getRandomItem, createElement} from "../util";
 
 export default class FilmDetails {
-  constructor({title, rating, duration, details: {age, director, writers, actors, releaseDate, country, genres, description, comments: {amount, comment: {text, author, date, emojis}}}}) {
+  constructor({title, rating, duration, poster, details: {age, director, writers, actors, releaseDate, country, genres, description, comments: {amount, comment: {text, author, date, emojis}}}}) {
     this._title = title;
     this._rating = rating;
     this._duration = duration;
+    this._poster = poster;
     this._details = {
       _age: age,
       _director: director,
@@ -28,7 +29,10 @@ export default class FilmDetails {
   }
 
   getElement() {
-    return !this._element && (createElement(this.getTemplate()));
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
   }
 
   removeElement() {
@@ -44,7 +48,7 @@ export default class FilmDetails {
       </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="./images/posters/the-great-flamarion.jpg" alt="">
+          <img class="film-details__poster-img" src="${this._poster}" alt="">
 
           <p class="film-details__age">${this._details._age}</p>
         </div>

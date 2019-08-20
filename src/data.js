@@ -19,8 +19,8 @@ const getDescription = (short = true) => {
   return `${description}.`;
 };
 const getRating = () => {
-  const firstDigit = getRandomNumber(10);
-  return firstDigit < 10 ? `${firstDigit}.${getRandomNumber(9)}` : `${firstDigit}.0`;
+  const firstDigit = getRandomNumber(9, 1);
+  return firstDigit < 9 ? `${firstDigit}.${getRandomNumber(9)}` : `${firstDigit}.0`;
 };
 const getDuration = () => `${getRandomNumber(2)}h ${getRandomNumber(59, 1)}m`;
 

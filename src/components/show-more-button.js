@@ -6,7 +6,10 @@ export default class ShowMoreButton {
   }
 
   getElement() {
-    return !this._element && (createElement(this.getTemplate()));
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
   }
 
   removeElement() {

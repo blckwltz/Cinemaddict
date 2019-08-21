@@ -14,5 +14,29 @@ const getRandomItem = (list) => {
   const array = Array.from(list);
   return array[getRandomNumber(array.length - 1)];
 };
+const Position = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`
+};
+const createElement = (template) => {
+  const containerElement = document.createElement(`div`);
+  containerElement.innerHTML = template;
+  return containerElement.firstChild;
+};
+const renderElement = (container, element, position = Position.BEFOREEND) => {
+  switch (position) {
+    case Position.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case Position.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+const removeElement = (element) => {
+  if (element) {
+    element.remove();
+  }
+};
 
-export {getRandomNumber, shuffleList, getRandomItem};
+export {getRandomNumber, shuffleList, getRandomItem, createElement, renderElement, removeElement};

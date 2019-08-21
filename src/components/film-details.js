@@ -1,6 +1,46 @@
-import {getRandomItem} from "../util";
+import {getRandomItem, createElement} from "../util";
 
-export const createFilmDetailsTemplate = (item) => `<section class="film-details">
+export default class FilmDetails {
+  constructor({title, rating, duration, poster, details: {age, director, writers, actors, releaseDate, country, genres, description, comments: {amount, comment: {text, author, date, emojis}}}}) {
+    this._title = title;
+    this._rating = rating;
+    this._duration = duration;
+    this._poster = poster;
+    this._details = {
+      _age: age,
+      _director: director,
+      _writers: writers,
+      _actors: actors,
+      _releaseDate: releaseDate,
+      _country: country,
+      _genres: genres,
+      _description: description,
+      _comments: {
+        _amount: amount,
+        _comment: {
+          _text: text,
+          _author: author,
+          _date: date,
+          _emojis: emojis,
+        }
+      }
+    };
+    this._element = null;
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    return this._element && (this._element = null);
+  }
+
+  getTemplate() {
+    return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
     <div class="form-details__top-container">
       <div class="film-details__close">
@@ -8,60 +48,60 @@ export const createFilmDetailsTemplate = (item) => `<section class="film-details
       </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="./images/posters/the-great-flamarion.jpg" alt="">
+          <img class="film-details__poster-img" src="${this._poster}" alt="">
 
-          <p class="film-details__age">${item.details.age}</p>
+          <p class="film-details__age">${this._details._age}</p>
         </div>
 
         <div class="film-details__info">
           <div class="film-details__info-head">
             <div class="film-details__title-wrap">
-              <h3 class="film-details__title">${getRandomItem(item.titles)}</h3>
-              <p class="film-details__title-original">Original: ${getRandomItem(item.titles)}</p>
+              <h3 class="film-details__title">${this._title}</h3>
+              <p class="film-details__title-original">Original: ${this._title}</p>
             </div>
 
             <div class="film-details__rating">
-              <p class="film-details__total-rating">${item.rating}</p>
+              <p class="film-details__total-rating">${this._rating}</p>
             </div>
           </div>
 
           <table class="film-details__table">
             <tr class="film-details__row">
               <td class="film-details__term">Director</td>
-              <td class="film-details__cell">${item.details.director}</td>
+              <td class="film-details__cell">${this._details._director}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">${item.details.writers.join(`, `)}</td>
+              <td class="film-details__cell">${this._details._writers.join(`, `)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">${item.details.actors.join(`, `)}</td>
+              <td class="film-details__cell">${this._details._actors.join(`, `)}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">${item.details.releaseDate}</td>
+              <td class="film-details__cell">${this._details._releaseDate}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${item.duration}</td>
+              <td class="film-details__cell">${this._duration}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
-              <td class="film-details__cell">${getRandomItem(item.details.countries)}</td>
+              <td class="film-details__cell">${this._details._country}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Genres</td>
               <td class="film-details__cell">
-                <span class="film-details__genre">${getRandomItem(item.genres)}</span>
-                <span class="film-details__genre">${getRandomItem(item.genres)}</span>
-                <span class="film-details__genre">${getRandomItem(item.genres)}</span>
+                <span class="film-details__genre">${this._details._genres[0]}</span>
+                <span class="film-details__genre">${this._details._genres[1]}</span>
+                <span class="film-details__genre">${this._details._genres[2]}</span>
               </td>
             </tr>
           </table>
 
           <p class="film-details__film-description">
-            ${item.details.description}
+            ${this._details._description}
           </p>
         </div>
       </div>
@@ -80,57 +120,57 @@ export const createFilmDetailsTemplate = (item) => `<section class="film-details
     
     <div class="form-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${item.details.comments.amount}</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._details._comments._amount}</span></h3>
 
         <ul class="film-details__comments-list">
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="${getRandomItem(item.details.comments.comment.emojis)}" width="55" height="55" alt="emoji">
+              <img src="${getRandomItem(this._details._comments._comment._emojis)}" width="55" height="55" alt="emoji">
             </span>
             <div>
-              <p class="film-details__comment-text">${item.details.comments.comment.text}</p>
+              <p class="film-details__comment-text">${this._details._comments._comment._text}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${item.details.comments.comment.author}</span>
-                <span class="film-details__comment-day">${item.details.comments.comment.date}</span>
+                <span class="film-details__comment-author">${this._details._comments._comment._author}</span>
+                <span class="film-details__comment-day">${this._details._comments._comment._date}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
           </li>
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="${getRandomItem(item.details.comments.comment.emojis)}" width="55" height="55" alt="emoji">
+              <img src="${getRandomItem(this._details._comments._comment._emojis)}" width="55" height="55" alt="emoji">
             </span>
             <div>
-              <p class="film-details__comment-text">${item.details.comments.comment.text}</p>
+              <p class="film-details__comment-text">${this._details._comments._comment._text}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${item.details.comments.comment.author}</span>
-                <span class="film-details__comment-day">${item.details.comments.comment.date}</span>
+                <span class="film-details__comment-author">${this._details._comments._comment._author}</span>
+                <span class="film-details__comment-day">${this._details._comments._comment._date}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
           </li>
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="${getRandomItem(item.details.comments.comment.emojis)}" width="55" height="55" alt="emoji">
+              <img src="${getRandomItem(this._details._comments._comment._emojis)}" width="55" height="55" alt="emoji">
             </span>
             <div>
-              <p class="film-details__comment-text">${item.details.comments.comment.text}</p>
+              <p class="film-details__comment-text">${this._details._comments._comment._text}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${item.details.comments.comment.author}</span>
-                <span class="film-details__comment-day">${item.details.comments.comment.date}</span>
+                <span class="film-details__comment-author">${this._details._comments._comment._author}</span>
+                <span class="film-details__comment-day">${this._details._comments._comment._date}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
           </li>
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="${getRandomItem(item.details.comments.comment.emojis)}" width="55" height="55" alt="emoji">
+              <img src="${getRandomItem(this._details._comments._comment._emojis)}" width="55" height="55" alt="emoji">
             </span>
             <div>
-              <p class="film-details__comment-text">${item.details.comments.comment.text}</p>
+              <p class="film-details__comment-text">${this._details._comments._comment._text}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${item.details.comments.comment.author}</span>
-                <span class="film-details__comment-day">${item.details.comments.comment.date}</span>
+                <span class="film-details__comment-author">${this._details._comments._comment._author}</span>
+                <span class="film-details__comment-day">${this._details._comments._comment._date}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
@@ -147,22 +187,22 @@ export const createFilmDetailsTemplate = (item) => `<section class="film-details
           <div class="film-details__emoji-list">
             <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="sleeping">
             <label class="film-details__emoji-label" for="emoji-smile">
-              <img src="${getRandomItem(item.details.comments.comment.emojis)}" width="30" height="30" alt="emoji">
+              <img src="${this._details._comments._comment._emojis[0]}" width="30" height="30" alt="emoji">
             </label>
 
             <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="neutral-face">
             <label class="film-details__emoji-label" for="emoji-sleeping">
-              <img src="${getRandomItem(item.details.comments.comment.emojis)}" width="30" height="30" alt="emoji">
+              <img src="${this._details._comments._comment._emojis[1]}" width="30" height="30" alt="emoji">
             </label>
 
             <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-gpuke" value="grinning">
             <label class="film-details__emoji-label" for="emoji-gpuke">
-              <img src="${getRandomItem(item.details.comments.comment.emojis)}" width="30" height="30" alt="emoji">
+              <img src="${this._details._comments._comment._emojis[2]}" width="30" height="30" alt="emoji">
             </label>
 
             <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="grinning">
             <label class="film-details__emoji-label" for="emoji-angry">
-              <img src="${getRandomItem(item.details.comments.comment.emojis)}" width="30" height="30" alt="emoji">
+              <img src="${this._details._comments._comment._emojis[3]}" width="30" height="30" alt="emoji">
             </label>
           </div>
         </div>
@@ -170,3 +210,5 @@ export const createFilmDetailsTemplate = (item) => `<section class="film-details
     </div>
   </form>
 </section>`;
+  }
+}

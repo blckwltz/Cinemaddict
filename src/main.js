@@ -1,59 +1,97 @@
-import {getFilmCard, filmCards, getFilmsAmount} from "./data";
-import {createSearchTemplate} from './components/search';
-import {createProfileRatingTemplate} from "./components/profile-rating";
-import {createMenuTemplate} from "./components/menu";
-import {createSortTemplate} from "./components/sort";
-import {createFilmsListTemplate} from "./components/films-list";
-import {createFilmCardTemplate} from "./components/film-card";
-import {createShowMoreButtonTemplate} from "./components/show-more-button";
-import {getRandomNumber} from "./util";
-import {createFilmDetailsTemplate} from "./components/film-details";
+import {renderElement, removeElement} from "./util";
+import {filmCards, getFilmsAmount} from "./data";
+import Search from './components/search';
+import ProfileRating from "./components/profile-rating";
+import Menu from "./components/menu";
+import Sort from "./components/sort";
+import FilmsList from "./components/films-list";
+import FilmCard from "./components/film-card";
+import ShowMoreButton from "./components/show-more-button";
+import FilmDetails from "./components/film-details";
 
 const BATCH_SIZE = 5;
+const TOP_AMOUNT = 2;
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
 const statisticsElement = document.querySelector(`.footer__statistics p`);
 
-const renderElement = (element, template, position = `beforeend`) => element.insertAdjacentHTML(position, template);
+renderElement(headerElement, new Search().getElement());
+renderElement(headerElement, new ProfileRating().getElement());
+renderElement(mainElement, new Menu().getElement());
+renderElement(mainElement, new Sort().getElement());
+renderElement(mainElement, new FilmsList().getElement());
+statisticsElement.textContent = `${getFilmsAmount()} movies inside`;
+
 const generateBatches = (array, batchSize = BATCH_SIZE) => {
   const batchesAmount = Math.ceil(array.length / batchSize);
   return new Array(batchesAmount).fill(``).map((item, index) => array.slice(index * batchSize, (index + 1) * batchSize));
 };
 
-renderElement(headerElement, createSearchTemplate());
-renderElement(headerElement, createProfileRatingTemplate(getRandomNumber(getFilmsAmount())));
-renderElement(mainElement, createMenuTemplate(getFilmsAmount()));
-renderElement(mainElement, createSortTemplate());
-renderElement(mainElement, createFilmsListTemplate());
-statisticsElement.textContent = `${getFilmsAmount()} movies inside`;
-
 const mainFilmsListElement = document.querySelector(`.films-list`);
+
+if (getFilmsAmount() > BATCH_SIZE) {
+  renderElement(mainFilmsListElement, new ShowMoreButton().getElement());
+}
+
 const mainFilmsListContainerElement = mainFilmsListElement.querySelector(`.films-list__container`);
 
-renderElement(mainFilmsListElement, createShowMoreButtonTemplate());
+const renderFilmCard = (card, container) => {
+  const filmCard = new FilmCard(card);
+  const filmDetails = new FilmDetails(card);
+
+  const hideFilmDetails = () => {
+    removeElement(filmDetails.getElement());
+    filmDetails.removeElement();
+  };
+
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      hideFilmDetails();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
+
+  const renderFilmDetails = () => {
+    renderElement(document.body, filmDetails.getElement());
+    filmDetails.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
+      hideFilmDetails();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    });
+    document.addEventListener(`keydown`, onEscKeyDown);
+  };
+
+  filmCard.getElement().querySelectorAll(`.film-card__title, .film-card__poster, .film-card__comments`).forEach((element) => element.addEventListener(`click`, renderFilmDetails));
+
+  renderElement(container, filmCard.getElement());
+};
 
 const firstBatch = (getFilmsAmount() > BATCH_SIZE) ? filmCards.slice(0, BATCH_SIZE) : filmCards;
 
-firstBatch.forEach((card) => renderElement(mainFilmsListContainerElement, createFilmCardTemplate(card)));
+firstBatch.forEach((card) => renderFilmCard(card, mainFilmsListContainerElement));
 
-const extraFilmsListElements = Array.from(document.querySelectorAll(`.films-list--extra`));
+const extraFilmsListContainerElements = document.querySelectorAll(`.films-list--extra .films-list__container`);
 
-extraFilmsListElements.forEach(function (filmsList) {
-  const container = filmsList.querySelector(`.films-list__container`);
-  filmCards.slice(0, 2).forEach((card) => renderElement(container, createFilmCardTemplate(card)));
-});
+const filmsByRating = filmCards.sort((a, b) => b.rating - a.rating);
+const topRatedFilms = (getFilmsAmount() > TOP_AMOUNT) ? filmsByRating.slice(0, TOP_AMOUNT) : filmsByRating;
 
-renderElement(document.body, createFilmDetailsTemplate(getFilmCard()));
+topRatedFilms.forEach((card) => renderFilmCard(card, extraFilmsListContainerElements[0]));
+
+const filmsByCommentsAmount = filmCards.sort((a, b) => b.commentsAmount - a.commentsAmount);
+const mostCommentedFilms = (getFilmsAmount() > TOP_AMOUNT) ? filmsByCommentsAmount.slice(0, TOP_AMOUNT) : filmsByCommentsAmount;
+
+mostCommentedFilms.slice(0, 2).forEach((card) => renderFilmCard(card, extraFilmsListContainerElements[1]));
 
 const buttonElement = mainFilmsListElement.querySelector(`.films-list__show-more`);
 let counter = 0;
 
-buttonElement.addEventListener(`click`, () => {
-  const batches = generateBatches(filmCards.slice(BATCH_SIZE));
-  batches[counter].forEach((item) => renderElement(mainFilmsListContainerElement, createFilmCardTemplate(item)));
-  counter++;
-  if (counter === batches.length) {
-    mainFilmsListElement.removeChild(buttonElement);
-  }
-});
+if (buttonElement) {
+  buttonElement.addEventListener(`click`, () => {
+    const batches = generateBatches(filmCards.slice(BATCH_SIZE));
+    batches[counter].forEach((item) => renderFilmCard(item, mainFilmsListContainerElement));
+    counter++;
+    if (counter === batches.length) {
+      mainFilmsListElement.removeChild(buttonElement);
+    }
+  });
+}

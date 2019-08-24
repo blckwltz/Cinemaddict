@@ -1,7 +1,9 @@
-import {getRandomItem, createElement} from "../util";
+import {getRandomItem} from "../util";
+import AbstractComponent from "./abstract-component";
 
-export default class FilmDetails {
+export default class FilmDetails extends AbstractComponent {
   constructor({title, rating, duration, poster, details: {age, director, writers, actors, releaseDate, country, genres, description, comments: {amount, comment: {text, author, date, emojis}}}}) {
+    super();
     this._title = title;
     this._rating = rating;
     this._duration = duration;
@@ -25,18 +27,6 @@ export default class FilmDetails {
         }
       }
     };
-    this._element = null;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    return this._element && (this._element = null);
   }
 
   getTemplate() {
@@ -125,7 +115,7 @@ export default class FilmDetails {
         <ul class="film-details__comments-list">
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="${getRandomItem(this._details._comments._comment._emojis)}" width="55" height="55" alt="emoji">
+              <img src="${getRandomItem(this._details._comments._comment._emojis).source}" width="55" height="55" alt="emoji">
             </span>
             <div>
               <p class="film-details__comment-text">${this._details._comments._comment._text}</p>
@@ -138,7 +128,7 @@ export default class FilmDetails {
           </li>
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="${getRandomItem(this._details._comments._comment._emojis)}" width="55" height="55" alt="emoji">
+              <img src="${getRandomItem(this._details._comments._comment._emojis).source}" width="55" height="55" alt="emoji">
             </span>
             <div>
               <p class="film-details__comment-text">${this._details._comments._comment._text}</p>
@@ -151,7 +141,7 @@ export default class FilmDetails {
           </li>
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="${getRandomItem(this._details._comments._comment._emojis)}" width="55" height="55" alt="emoji">
+              <img src="${getRandomItem(this._details._comments._comment._emojis).source}" width="55" height="55" alt="emoji">
             </span>
             <div>
               <p class="film-details__comment-text">${this._details._comments._comment._text}</p>
@@ -164,7 +154,7 @@ export default class FilmDetails {
           </li>
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="${getRandomItem(this._details._comments._comment._emojis)}" width="55" height="55" alt="emoji">
+              <img src="${getRandomItem(this._details._comments._comment._emojis).source}" width="55" height="55" alt="emoji">
             </span>
             <div>
               <p class="film-details__comment-text">${this._details._comments._comment._text}</p>
@@ -183,27 +173,12 @@ export default class FilmDetails {
           <label class="film-details__comment-label">
             <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
           </label>
-
+          
           <div class="film-details__emoji-list">
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="sleeping">
-            <label class="film-details__emoji-label" for="emoji-smile">
-              <img src="${this._details._comments._comment._emojis[0]}" width="30" height="30" alt="emoji">
-            </label>
-
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="neutral-face">
-            <label class="film-details__emoji-label" for="emoji-sleeping">
-              <img src="${this._details._comments._comment._emojis[1]}" width="30" height="30" alt="emoji">
-            </label>
-
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-gpuke" value="grinning">
-            <label class="film-details__emoji-label" for="emoji-gpuke">
-              <img src="${this._details._comments._comment._emojis[2]}" width="30" height="30" alt="emoji">
-            </label>
-
-            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="grinning">
-            <label class="film-details__emoji-label" for="emoji-angry">
-              <img src="${this._details._comments._comment._emojis[3]}" width="30" height="30" alt="emoji">
-            </label>
+          ${this._details._comments._comment._emojis.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji.id}" value="${emoji.value}">
+        <label class="film-details__emoji-label" for="emoji-${emoji.id}">
+        <img src="${emoji.source}" width="30" height="30" alt="emoji">
+        </label>`).join(``)}
           </div>
         </div>
       </section>

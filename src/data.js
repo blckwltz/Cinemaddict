@@ -9,7 +9,28 @@ const genres = new Set([`Musical`, `Western`, `Drama`, `Comedy`, `Cartoon`, `Mys
 const posters = [`./images/posters/made-for-each-other.png`, `./images/posters/popeye-meets-sinbad.png`, `./images/posters/sagebrush-trail.jpg`, `./images/posters/santa-claus-conquers-the-martians.jpg`, `./images/posters/the-dance-of-life.jpg`, `./images/posters/the-great-flamarion.jpg`, `./images/posters/the-man-with-the-golden-arm.jpg`];
 const names = new Set([`Anthony Mann`, `Anne Wigton`, `Heinz Herald`, `Richard Weil`, `Erich von Stroheim`, `Mary Beth Hughes`, `Dan Duryea`]);
 const countries = new Set([`USA`, `Russia`, `France`, `Germany`, `Italy`]);
-const emojis = [`./images/emoji/smile.png`, `./images/emoji/sleeping.png`, `./images/emoji/puke.png`, `./images/emoji/angry.png`];
+const emojis = [
+  {
+    id: `smile`,
+    value: `sleeping`,
+    source: `./images/emoji/smile.png`,
+  },
+  {
+    id: `sleeping`,
+    value: `neutral-face`,
+    source: `./images/emoji/sleeping.png`,
+  },
+  {
+    id: `gpuke`,
+    value: `grinning`,
+    source: `./images/emoji/puke.png`,
+  },
+  {
+    id: `angry`,
+    value: `grinning`,
+    source: `./images/emoji/angry.png`
+  }
+];
 
 const getDescription = (short = true) => {
   const description = shuffleList(strings).slice(0, getRandomNumber(3, 1)).join(`. `);
@@ -19,7 +40,7 @@ const getDescription = (short = true) => {
   return `${description}.`;
 };
 const getRating = () => {
-  const firstDigit = getRandomNumber(9, 1);
+  const firstDigit = getRandomNumber(9);
   return firstDigit < 9 ? `${firstDigit}.${getRandomNumber(9)}` : `${firstDigit}.0`;
 };
 const getDuration = () => `${getRandomNumber(2)}h ${getRandomNumber(59, 1)}m`;
@@ -32,15 +53,18 @@ const getFilmCard = () => ({
   genre: getRandomItem(genres),
   poster: getRandomItem(posters),
   description: getDescription(),
-  commentsAmount: `${getRandomNumber(500)}`,
+  commentsAmount: `${getRandomNumber(300)}`,
+  inWatchlist: Boolean(getRandomNumber(1)),
+  isWatched: Boolean(getRandomNumber(1)),
+  isFavorite: Boolean(getRandomNumber(1)),
   details: {
     age: `${getRandomNumber(21)}+`,
     director: getRandomItem(names),
-    writers: new Array(3).fill(``).map(() => getRandomItem(names)),
-    actors: new Array(3).fill(``).map(() => getRandomItem(names)),
-    releaseDate: `${getRandomNumber(31)} ${getRandomItem(MONTHS)} ${getRandomNumber(2019, 1929)}`,
+    writers: new Array(...new Array(3)).map(() => getRandomItem(names)),
+    actors: new Array(...new Array(3)).map(() => getRandomItem(names)),
+    releaseDate: `${getRandomNumber(31, 1)} ${getRandomItem(MONTHS)} ${getRandomNumber(2019, 1929)}`,
     country: getRandomItem(countries),
-    genres: new Array(3).fill(``).map(() => getRandomItem(genres)),
+    genres: new Array(...new Array(3)).map(() => getRandomItem(genres)),
     description: getDescription(false),
     comments: {
       amount: getRandomNumber(50),
@@ -54,7 +78,7 @@ const getFilmCard = () => ({
   },
 });
 
-const filmCards = new Array(filmsAmount).fill(``).map(getFilmCard);
+const filmCards = new Array(...new Array(filmsAmount)).map(getFilmCard);
 
 const getFilmsAmount = () => filmCards.length;
 

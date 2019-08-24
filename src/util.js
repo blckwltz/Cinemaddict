@@ -14,6 +14,17 @@ const getRandomItem = (list) => {
   const array = Array.from(list);
   return array[getRandomNumber(array.length - 1)];
 };
+const getTitle = (amount) => {
+  let title = ``;
+  if (amount >= 1 && amount <= 10) {
+    title = `Novice`;
+  } else if (amount >= 11 && amount <= 20) {
+    title = `Fan`;
+  } else if (amount > 21) {
+    title = `Movie Buff`;
+  }
+  return title;
+};
 const Position = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`
@@ -39,4 +50,4 @@ const removeElement = (element) => {
   }
 };
 
-export {getRandomNumber, shuffleList, getRandomItem, createElement, renderElement, removeElement};
+export {getRandomNumber, shuffleList, getRandomItem, getTitle, createElement, renderElement, removeElement};

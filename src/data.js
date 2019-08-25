@@ -78,8 +78,20 @@ const getFilmCard = () => ({
   },
 });
 
+const getUserTitle = (amount) => {
+  let title = ``;
+  if (amount >= 1 && amount <= 10) {
+    title = `Novice`;
+  } else if (amount >= 11 && amount <= 20) {
+    title = `Fan`;
+  } else if (amount > 21) {
+    title = `Movie Buff`;
+  }
+  return title;
+};
+
 const filmCards = new Array(...new Array(filmsAmount)).map(getFilmCard);
 
 const getFilmsAmount = () => filmCards.length;
 
-export {getFilmCard, filmCards, getFilmsAmount};
+export {getFilmCard, getUserTitle, filmCards, getFilmsAmount};

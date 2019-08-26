@@ -13,7 +13,6 @@ export default class PageController {
     this._container = container;
     this._cards = cards;
     this._generalAmount = generalAmount;
-    this._copiedCards = cards.slice(this._generalAmount);
     this._categoryAmount = categoryAmount;
     this._menu = new Menu(cards);
     this._sort = new Sort();
@@ -78,8 +77,10 @@ export default class PageController {
 
     const renderFilmDetails = () => {
       if (document.body.querySelector(`.film-details`)) {
-        return;
+        removeElement(document.body.querySelector(`.film-details`));
+        filmDetails.removeElement();
       }
+
       renderElement(document.body, filmDetails.getElement());
       filmDetails.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
         hideFilmDetails();
@@ -131,10 +132,12 @@ export default class PageController {
   }
 
   _onShowMoreButtonClick() {
-    this._copiedCards.splice(0, this._generalAmount).forEach((card) => this._renderFilmCard(this._generalFilmsList.getElement().querySelector(`.films-list__container`), card));
+    const filmsContainer = this._generalFilmsList.getElement().querySelector(`.films-list__container`);
 
-    if (this._copiedCards.length === 0) {
-      this._generalFilmsList.getElement().removeChild(this._showMoreButton.getElement());
+    this._cards.slice(filmsContainer.childElementCount, (this._generalAmount + filmsContainer.childElementCount)).forEach((card) => this._renderFilmCard(this._generalFilmsList.getElement().querySelector(`.films-list__container`), card));
+
+    if (filmsContainer.childElementCount === this._cards.length) {
+      removeElement(this._showMoreButton.getElement());
       this._showMoreButton.removeElement();
     }
   }

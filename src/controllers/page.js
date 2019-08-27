@@ -1,11 +1,11 @@
-import {renderElement, removeElement} from "../util";
+import {ListTitles, Sorting} from "../utils/constants";
+import {renderElement, removeElement} from "../utils/util";
+import MovieController from "./movie";
 import Menu from "../components/menu";
 import Sort from "../components/sort";
 import Films from "../components/films";
 import FilmsList from "../components/films-list";
 import NoFilms from "../components/no-films";
-import FilmCard from "../components/film-card";
-import FilmDetails from "../components/film-details";
 import ShowMoreButton from "../components/show-more-button";
 
 export default class PageController {
@@ -17,11 +17,15 @@ export default class PageController {
     this._menu = new Menu(cards);
     this._sort = new Sort();
     this._films = new Films();
-    this._generalFilmsList = new FilmsList(false, `All movies. Upcoming`);
-    this._topRatedFilmsList = new FilmsList(true, `Top rated`);
-    this._mostCommentedFilmsList = new FilmsList(true, `Most commented`);
+    this._generalFilmsList = new FilmsList(false, ListTitles.GENERAL);
+    this._topRatedFilmsList = new FilmsList(true, ListTitles.TOP_RATED);
+    this._mostCommentedFilmsList = new FilmsList(true, ListTitles.MOST_COMMENTED);
     this._noFilms = new NoFilms();
     this._showMoreButton = new ShowMoreButton();
+
+    this._subscriptions = [];
+    this._onChangeView = this._onChangeView.bind(this);
+    this._onDataChange = this._onDataChange.bind(this);
   }
 
   init() {
@@ -33,23 +37,34 @@ export default class PageController {
     }
 
     renderElement(this._container, this._films.getElement());
+    this._renderFilmLists(this._cards);
+  }
+
+  _renderFilmLists(cards) {
+    removeElement(this._generalFilmsList.getElement());
+    this._generalFilmsList.removeElement();
+
     renderElement(this._films.getElement(), this._generalFilmsList.getElement());
 
-    if (!this._cards.length) {
+    if (!cards.length) {
       renderElement(this._generalFilmsList.getElement(), this._noFilms.getElement());
     }
 
-    this._cards.slice(0, this._generalAmount).forEach((card) => this._renderFilmCard(this._generalFilmsList.getElement().querySelector(`.films-list__container`), card));
+    cards.slice(0, this._generalAmount).forEach((card) => this._renderFilmCard(this._generalFilmsList.getElement().querySelector(`.films-list__container`), card));
 
-    if (this._cards.some((card) => parseInt(card.rating, 10))) {
+    if (cards.some((card) => parseInt(card.rating, 10))) {
+      removeElement(this._topRatedFilmsList.getElement());
+      this._topRatedFilmsList.removeElement();
       renderElement(this._films.getElement(), this._topRatedFilmsList.getElement());
-      const cardsByRating = this._cards.slice().sort((a, b) => b.rating - a.rating);
+      const cardsByRating = this._cards.slice().sort(Sorting.BY_RATING.FUNCTION);
       cardsByRating.slice(0, this._categoryAmount).forEach((card) => this._renderFilmCard(this._topRatedFilmsList.getElement().querySelector(`.films-list__container`), card));
     }
 
-    if (this._cards.some((card) => parseInt(card.commentsAmount, 10))) {
+    if (cards.some((card) => parseInt(card.commentsAmount, 10))) {
+      removeElement(this._mostCommentedFilmsList.getElement());
+      this._mostCommentedFilmsList.removeElement();
       renderElement(this._films.getElement(), this._mostCommentedFilmsList.getElement());
-      const cardsByCommentsAmount = this._cards.slice().sort((a, b) => b.commentsAmount - a.commentsAmount);
+      const cardsByCommentsAmount = this._cards.slice().sort(Sorting.BY_COMMENTS.FUNCTION);
       cardsByCommentsAmount.slice(0, this._categoryAmount).forEach((card) => this._renderFilmCard(this._mostCommentedFilmsList.getElement().querySelector(`.films-list__container`), card));
     }
 
@@ -60,44 +75,17 @@ export default class PageController {
   }
 
   _renderFilmCard(container, card) {
-    const filmCard = new FilmCard(card);
-    const filmDetails = new FilmDetails(card);
+    const movieController = new MovieController(container, card, this._onDataChange, this._onChangeView);
+    this._subscriptions.push(movieController.setDefaultView.bind(movieController));
+  }
 
-    const hideFilmDetails = () => {
-      removeElement(filmDetails.getElement());
-      filmDetails.removeElement();
-    };
+  _onChangeView() {
+    this._subscriptions.forEach((subscription) => subscription());
+  }
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        hideFilmDetails();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    const renderFilmDetails = () => {
-      if (document.body.querySelector(`.film-details`)) {
-        removeElement(document.body.querySelector(`.film-details`));
-        filmDetails.removeElement();
-      }
-
-      renderElement(document.body, filmDetails.getElement());
-      filmDetails.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
-        hideFilmDetails();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      });
-      filmDetails.getElement().querySelector(`.film-details__comment-input`).addEventListener(`focus`, () => {
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      });
-      filmDetails.getElement().querySelector(`.film-details__comment-input`).addEventListener(`blur`, () => {
-        document.addEventListener(`keydown`, onEscKeyDown);
-      });
-      document.addEventListener(`keydown`, onEscKeyDown);
-    };
-
-    filmCard.getElement().querySelectorAll(`.film-card__title, .film-card__poster, .film-card__comments`).forEach((element) => element.addEventListener(`click`, renderFilmDetails));
-
-    renderElement(container, filmCard.getElement());
+  _onDataChange(newData, oldData) {
+    this._cards[this._cards.findIndex((card) => card === oldData)] = newData;
+    this._renderFilmLists(this._cards);
   }
 
   _onSortLinkClick(evt) {
@@ -112,19 +100,19 @@ export default class PageController {
     const activeClass = `sort__button--active`;
     const activeSortElement = this._sort.getElement().querySelector(`.${activeClass}`);
     switch (evt.target.dataset.sortType) {
-      case `date`:
+      case Sorting.BY_DATE.TYPE:
         activeSortElement.classList.remove(activeClass);
         evt.target.classList.add(activeClass);
-        const cardsByDate = this._cards.slice(0, amountToSort).sort((a, b) => b.year - a.year);
+        const cardsByDate = this._cards.slice(0, amountToSort).sort(Sorting.BY_DATE.FUNCTION);
         cardsByDate.forEach((card) => this._renderFilmCard(filmsListContainer, card));
         break;
-      case `rating`:
+      case Sorting.BY_RATING.TYPE:
         activeSortElement.classList.remove(activeClass);
         evt.target.classList.add(activeClass);
-        const cardsByRating = this._cards.slice(0, amountToSort).sort((a, b) => b.rating - a.rating);
+        const cardsByRating = this._cards.slice(0, amountToSort).sort(Sorting.BY_RATING.FUNCTION);
         cardsByRating.forEach((card) => this._renderFilmCard(filmsListContainer, card));
         break;
-      case `default`:
+      case Sorting.BY_DEFAULT.TYPE:
         activeSortElement.classList.remove(activeClass);
         evt.target.classList.add(activeClass);
         this._cards.slice(0, amountToSort).forEach((card) => this._renderFilmCard(filmsListContainer, card));
@@ -134,7 +122,7 @@ export default class PageController {
   _onShowMoreButtonClick() {
     const filmsContainer = this._generalFilmsList.getElement().querySelector(`.films-list__container`);
 
-    this._cards.slice(filmsContainer.childElementCount, (this._generalAmount + filmsContainer.childElementCount)).forEach((card) => this._renderFilmCard(this._generalFilmsList.getElement().querySelector(`.films-list__container`), card));
+    this._cards.slice(filmsContainer.childElementCount, (this._generalAmount + filmsContainer.childElementCount)).forEach((card) => this._renderFilmCard(filmsContainer, card));
 
     if (filmsContainer.childElementCount === this._cards.length) {
       removeElement(this._showMoreButton.getElement());

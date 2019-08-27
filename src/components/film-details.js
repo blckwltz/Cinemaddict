@@ -1,13 +1,18 @@
-import {getRandomItem} from "../util";
+import {Actions} from "../utils/constants";
+import {createElement, getRandomItem, removeElement} from "../utils/util";
 import AbstractComponent from "./abstract-component";
 
 export default class FilmDetails extends AbstractComponent {
-  constructor({title, rating, duration, poster, details: {age, director, writers, actors, releaseDate, country, genres, description, comments: {amount, comment: {text, author, date, emojis}}}}) {
+  constructor({title, rating, duration, poster, commentsAmount, inWatchlist, isWatched, isFavorite, details: {age, director, writers, actors, releaseDate, country, genres, description, comments: {commentText, commentAuthor, commentDate, emojis}}}) {
     super();
     this._title = title;
     this._rating = rating;
     this._duration = duration;
     this._poster = poster;
+    this._commentsAmount = commentsAmount;
+    this._inWatchlist = inWatchlist;
+    this._isWatched = isWatched;
+    this._isFavorite = isFavorite;
     this._details = {
       _age: age,
       _director: director,
@@ -18,15 +23,14 @@ export default class FilmDetails extends AbstractComponent {
       _genres: genres,
       _description: description,
       _comments: {
-        _amount: amount,
-        _comment: {
-          _text: text,
-          _author: author,
-          _date: date,
-          _emojis: emojis,
-        }
+        _text: commentText,
+        _author: commentAuthor,
+        _date: commentDate,
+        _emojis: emojis,
       }
     };
+
+    this._subscribeOnEvents();
   }
 
   getTemplate() {
@@ -97,70 +101,70 @@ export default class FilmDetails extends AbstractComponent {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
-        <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${this._inWatchlist ? `checked` : ``}>
+        <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist" data-action="${Actions.ADD_TO_WATCHLIST.TYPE}">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
-        <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${this._isWatched ? `checked` : ``}>
+        <label for="watched" class="film-details__control-label film-details__control-label--watched" data-action="${Actions.MARK_AS_WATCHED.TYPE}">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
-        <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${this._isFavorite ? `checked` : ``}>
+        <label for="favorite" class="film-details__control-label film-details__control-label--favorite" data-action="${Actions.ADD_TO_FAVORITES.TYPE}">Add to favorites</label>
       </section>
     </div>
     
     <div class="form-details__bottom-container">
       <section class="film-details__comments-wrap">
-        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._details._comments._amount}</span></h3>
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${this._commentsAmount}</span></h3>
 
         <ul class="film-details__comments-list">
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="${getRandomItem(this._details._comments._comment._emojis).source}" width="55" height="55" alt="emoji">
+              <img src="${getRandomItem(this._details._comments._emojis).source}" width="55" height="55" alt="emoji">
             </span>
             <div>
-              <p class="film-details__comment-text">${this._details._comments._comment._text}</p>
+              <p class="film-details__comment-text">${this._details._comments._text}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${this._details._comments._comment._author}</span>
-                <span class="film-details__comment-day">${this._details._comments._comment._date}</span>
+                <span class="film-details__comment-author">${this._details._comments._author}</span>
+                <span class="film-details__comment-day">${this._details._comments._date}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
           </li>
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="${getRandomItem(this._details._comments._comment._emojis).source}" width="55" height="55" alt="emoji">
+              <img src="${getRandomItem(this._details._comments._emojis).source}" width="55" height="55" alt="emoji">
             </span>
             <div>
-              <p class="film-details__comment-text">${this._details._comments._comment._text}</p>
+              <p class="film-details__comment-text">${this._details._comments._text}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${this._details._comments._comment._author}</span>
-                <span class="film-details__comment-day">${this._details._comments._comment._date}</span>
+                <span class="film-details__comment-author">${this._details._comments._author}</span>
+                <span class="film-details__comment-day">${this._details._comments._date}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
           </li>
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="${getRandomItem(this._details._comments._comment._emojis).source}" width="55" height="55" alt="emoji">
+              <img src="${getRandomItem(this._details._comments._emojis).source}" width="55" height="55" alt="emoji">
             </span>
             <div>
-              <p class="film-details__comment-text">${this._details._comments._comment._text}</p>
+              <p class="film-details__comment-text">${this._details._comments._text}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${this._details._comments._comment._author}</span>
-                <span class="film-details__comment-day">${this._details._comments._comment._date}</span>
+                <span class="film-details__comment-author">${this._details._comments._author}</span>
+                <span class="film-details__comment-day">${this._details._comments._date}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
           </li>
           <li class="film-details__comment">
             <span class="film-details__comment-emoji">
-              <img src="${getRandomItem(this._details._comments._comment._emojis).source}" width="55" height="55" alt="emoji">
+              <img src="${getRandomItem(this._details._comments._emojis).source}" width="55" height="55" alt="emoji">
             </span>
             <div>
-              <p class="film-details__comment-text">${this._details._comments._comment._text}</p>
+              <p class="film-details__comment-text">${this._details._comments._text}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-author">${this._details._comments._comment._author}</span>
-                <span class="film-details__comment-day">${this._details._comments._comment._date}</span>
+                <span class="film-details__comment-author">${this._details._comments._author}</span>
+                <span class="film-details__comment-day">${this._details._comments._date}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
@@ -175,7 +179,7 @@ export default class FilmDetails extends AbstractComponent {
           </label>
           
           <div class="film-details__emoji-list">
-          ${this._details._comments._comment._emojis.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji.id}" value="${emoji.value}">
+          ${this._details._comments._emojis.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-${emoji.id}" value="${emoji.value}">
         <label class="film-details__emoji-label" for="emoji-${emoji.id}">
         <img src="${emoji.source}" width="30" height="30" alt="emoji">
         </label>`).join(``)}
@@ -185,5 +189,77 @@ export default class FilmDetails extends AbstractComponent {
     </div>
   </form>
 </section>`;
+  }
+
+  _subscribeOnEvents() {
+    const scoreBlockElement = createElement(`<div class="form-details__middle-container">
+      <section class="film-details__user-rating-wrap">
+        <div class="film-details__user-rating-controls">
+          <button class="film-details__watched-reset" type="button">Undo</button>
+        </div>
+
+        <div class="film-details__user-score">
+          <div class="film-details__user-rating-poster">
+            <img src="${this._poster}" alt="film-poster" class="film-details__user-rating-img">
+          </div>
+
+          <section class="film-details__user-rating-inner">
+            <h3 class="film-details__user-rating-title">${this._title}</h3>
+
+            <p class="film-details__user-rating-feelings">How you feel it?</p>
+
+            <div class="film-details__user-rating-score">
+              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="1" id="rating-1">
+              <label class="film-details__user-rating-label" for="rating-1">1</label>
+
+              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="2" id="rating-2">
+              <label class="film-details__user-rating-label" for="rating-2">2</label>
+
+              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="3" id="rating-3">
+              <label class="film-details__user-rating-label" for="rating-3">3</label>
+
+              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="4" id="rating-4">
+              <label class="film-details__user-rating-label" for="rating-4">4</label>
+
+              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="5" id="rating-5">
+              <label class="film-details__user-rating-label" for="rating-5">5</label>
+
+              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="6" id="rating-6">
+              <label class="film-details__user-rating-label" for="rating-6">6</label>
+
+              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="7" id="rating-7">
+              <label class="film-details__user-rating-label" for="rating-7">7</label>
+
+              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="8" id="rating-8">
+              <label class="film-details__user-rating-label" for="rating-8">8</label>
+
+              <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="9" id="rating-9" checked>
+              <label class="film-details__user-rating-label" for="rating-9">9</label>
+
+            </div>
+          </section>
+        </div>
+      </section>
+    </div>`);
+    if (this.getElement().querySelector(`#watched`).checked) {
+      this.getElement().querySelector(`.film-details__inner`).insertBefore(scoreBlockElement, this.getElement().querySelector(`.form-details__bottom-container`));
+    }
+
+    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, () => {
+      if (this.getElement().querySelector(`.form-details__middle-container`)) {
+        removeElement(this.getElement().querySelector(`.form-details__middle-container`));
+        return;
+      }
+
+      this.getElement().querySelector(`.film-details__inner`).insertBefore(scoreBlockElement, this.getElement().querySelector(`.form-details__bottom-container`));
+    });
+
+    this.getElement().querySelectorAll(`.film-details__emoji-label`).forEach((element) => {
+      element.addEventListener(`click`, () => {
+        const imageElement = element.querySelector(`img`);
+        this.getElement().querySelector(`.film-details__add-emoji-label`).innerHTML = ``;
+        this.getElement().querySelector(`.film-details__add-emoji-label`).appendChild(createElement(`<img src="${imageElement.src}" width="55" height="55" alt="emoji">`));
+      });
+    });
   }
 }

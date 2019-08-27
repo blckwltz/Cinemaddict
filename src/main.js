@@ -1,11 +1,9 @@
-import {renderElement} from "./util";
+import {GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT} from "./utils/constants";
+import {renderElement} from "./utils/util";
 import {filmCards, getFilmsAmount} from "./data";
 import Search from './components/search';
 import ProfileRating from "./components/profile-rating";
 import PageController from "./controllers/page";
-
-const GENERAL_FILMS_AMOUNT = 5;
-const CATEGORY_FILMS_AMOUNT = 2;
 
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);

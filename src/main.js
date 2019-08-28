@@ -1,4 +1,3 @@
-import {GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT} from "./utils/constants";
 import {renderElement} from "./utils/util";
 import {filmCards, getFilmsAmount} from "./data";
 import Search from './components/search';
@@ -13,5 +12,5 @@ renderElement(headerElement, new Search().getElement());
 renderElement(headerElement, new ProfileRating().getElement());
 statisticsElement.textContent = `${getFilmsAmount()} movies inside`;
 
-const pageController = new PageController(mainElement, filmCards, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT);
+const pageController = new PageController(mainElement, filmCards);
 pageController.init();

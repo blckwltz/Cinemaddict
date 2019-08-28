@@ -1,4 +1,4 @@
-import {ListTitles, Sorting} from "../utils/constants";
+import {GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, ListTitles, Sorting} from "../utils/constants";
 import {renderElement, removeElement} from "../utils/util";
 import MovieController from "./movie";
 import Menu from "../components/menu";
@@ -9,11 +9,11 @@ import NoFilms from "../components/no-films";
 import ShowMoreButton from "../components/show-more-button";
 
 export default class PageController {
-  constructor(container, cards, generalAmount, categoryAmount) {
+  constructor(container, cards) {
     this._container = container;
     this._cards = cards;
-    this._generalAmount = generalAmount;
-    this._categoryAmount = categoryAmount;
+    this._generalAmount = GENERAL_FILMS_AMOUNT;
+    this._categoryAmount = CATEGORY_FILMS_AMOUNT;
     this._menu = new Menu(cards);
     this._sort = new Sort();
     this._films = new Films();
@@ -40,7 +40,7 @@ export default class PageController {
     this._renderFilmLists(this._cards);
   }
 
-  _renderFilmLists(cards) {
+  _renderFilmLists(cards, amount = this._generalAmount) {
     removeElement(this._generalFilmsList.getElement());
     this._generalFilmsList.removeElement();
 
@@ -50,7 +50,7 @@ export default class PageController {
       renderElement(this._generalFilmsList.getElement(), this._noFilms.getElement());
     }
 
-    cards.slice(0, this._generalAmount).forEach((card) => this._renderFilmCard(this._generalFilmsList.getElement().querySelector(`.films-list__container`), card));
+    cards.slice(0, amount).forEach((card) => this._renderFilmCard(this._generalFilmsList.getElement().querySelector(`.films-list__container`), card));
 
     if (cards.some((card) => parseInt(card.rating, 10))) {
       removeElement(this._topRatedFilmsList.getElement());
@@ -69,6 +69,8 @@ export default class PageController {
     }
 
     if (this._cards.length > this._generalAmount) {
+      removeElement(this._showMoreButton.getElement());
+      this._showMoreButton.removeElement();
       renderElement(this._generalFilmsList.getElement(), this._showMoreButton.getElement());
       this._showMoreButton.getElement().addEventListener(`click`, this._onShowMoreButtonClick.bind(this));
     }
@@ -85,7 +87,7 @@ export default class PageController {
 
   _onDataChange(newData, oldData) {
     this._cards[this._cards.findIndex((card) => card === oldData)] = newData;
-    this._renderFilmLists(this._cards);
+    this._renderFilmLists(this._cards, this._generalFilmsList.getElement().querySelector(`.films-list__container`).childElementCount);
   }
 
   _onSortLinkClick(evt) {
@@ -95,7 +97,7 @@ export default class PageController {
     }
 
     const filmsListContainer = this._generalFilmsList.getElement().querySelector(`.films-list__container`);
-    const amountToSort = filmsListContainer.childElementCount;
+    const amountToRender = filmsListContainer.childElementCount;
     filmsListContainer.innerHTML = ``;
     const activeClass = `sort__button--active`;
     const activeSortElement = this._sort.getElement().querySelector(`.${activeClass}`);
@@ -103,19 +105,19 @@ export default class PageController {
       case Sorting.BY_DATE.TYPE:
         activeSortElement.classList.remove(activeClass);
         evt.target.classList.add(activeClass);
-        const cardsByDate = this._cards.slice(0, amountToSort).sort(Sorting.BY_DATE.FUNCTION);
-        cardsByDate.forEach((card) => this._renderFilmCard(filmsListContainer, card));
+        const cardsByDate = this._cards.sort(Sorting.BY_DATE.FUNCTION);
+        cardsByDate.slice(0, amountToRender).forEach((card) => this._renderFilmCard(filmsListContainer, card));
         break;
       case Sorting.BY_RATING.TYPE:
         activeSortElement.classList.remove(activeClass);
         evt.target.classList.add(activeClass);
-        const cardsByRating = this._cards.slice(0, amountToSort).sort(Sorting.BY_RATING.FUNCTION);
-        cardsByRating.forEach((card) => this._renderFilmCard(filmsListContainer, card));
+        const cardsByRating = this._cards.sort(Sorting.BY_RATING.FUNCTION);
+        cardsByRating.slice(0, amountToRender).forEach((card) => this._renderFilmCard(filmsListContainer, card));
         break;
       case Sorting.BY_DEFAULT.TYPE:
         activeSortElement.classList.remove(activeClass);
         evt.target.classList.add(activeClass);
-        this._cards.slice(0, amountToSort).forEach((card) => this._renderFilmCard(filmsListContainer, card));
+        this._cards.slice(0, amountToRender).forEach((card) => this._renderFilmCard(filmsListContainer, card));
     }
   }
 

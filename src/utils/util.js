@@ -16,6 +16,7 @@ const getRandomItem = (list) => {
   const array = Array.isArray(list) ? list : Array.from(list);
   return array[getRandomNumber(array.length - 1)];
 };
+const getRandomDate = (start, end) => new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 const createElement = (template) => {
   const containerElement = document.createElement(`div`);
   containerElement.innerHTML = template;
@@ -37,4 +38,4 @@ const removeElement = (element) => {
   }
 };
 
-export {getRandomNumber, shuffleList, getRandomItem, createElement, renderElement, removeElement};
+export {getRandomNumber, shuffleList, getRandomItem, getRandomDate, createElement, renderElement, removeElement};

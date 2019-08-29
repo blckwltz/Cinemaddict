@@ -2,6 +2,7 @@ import {Actions} from "../utils/constants";
 import FilmCard from "../components/film-card";
 import FilmDetails from "../components/film-details";
 import {createElement, removeElement, renderElement} from "../utils/util";
+import moment from "moment";
 
 export default class MovieController {
   constructor(container, data, onDataChange, onChangeView) {
@@ -62,12 +63,13 @@ export default class MovieController {
             <div>
               <p class="film-details__comment-text">${commentFieldElement.value}</p>
               <p class="film-details__comment-info">
-                <span class="film-details__comment-day">${new Date(Date.now())}</span>
+                <span class="film-details__comment-day">${moment().fromNow()}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
           </li>`);
         commentsListElement.appendChild(commentElement);
+        removeElement(this._filmDetails.getElement().querySelector(`.film-details__add-emoji-label img`));
         commentFieldElement.value = ``;
       }
     };

@@ -2,7 +2,7 @@ const MAX_FILMS_AMOUNT = 50;
 const MAX_RATING = 9;
 const MAX_COMMENTS_AMOUNT = 300;
 const MAX_AGE = 21;
-const MONTHS = new Set([`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`]);
+const EARLIEST_RELEASE_DATE = `1929-01-01`;
 const GENERAL_FILMS_AMOUNT = 5;
 const CATEGORY_FILMS_AMOUNT = 2;
 
@@ -15,10 +15,6 @@ const Description = {
     MAX: 140,
     TO_DISPLAY: 139,
   },
-};
-const Years = {
-  MIN: 1929,
-  MAX: 2019,
 };
 const UserRating = {
   MILESTONES: {
@@ -72,4 +68,4 @@ const Actions = {
   },
 };
 
-export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, MONTHS, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, Description, Years, UserRating, Position, ListTitles, Sorting, Actions};
+export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, Description, UserRating, Position, ListTitles, Sorting, Actions};

@@ -1,7 +1,8 @@
+import {Actions} from "../utils/constants";
 import AbstractComponent from "./abstract-component";
 
 export default class FilmCard extends AbstractComponent {
-  constructor({title, rating, year, duration, genre, poster, description, commentsAmount}) {
+  constructor({title, rating, year, duration, genre, poster, description, commentsAmount, inWatchlist, isWatched, isFavorite}) {
     super();
     this._title = title;
     this._rating = rating;
@@ -11,6 +12,9 @@ export default class FilmCard extends AbstractComponent {
     this._poster = poster;
     this._description = description;
     this._commentsAmount = commentsAmount;
+    this._inWatchlist = inWatchlist;
+    this._isWatched = isWatched;
+    this._isFavorite = isFavorite;
   }
 
   getTemplate() {
@@ -26,9 +30,9 @@ export default class FilmCard extends AbstractComponent {
           <p class="film-card__description">${this._description}</p>
           <a class="film-card__comments">${this._commentsAmount} comments</a>
           <form class="film-card__controls">
-            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
-            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched">Mark as watched</button>
-            <button class="film-card__controls-item button film-card__controls-item--favorite">Mark as favorite</button>
+            <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist ${this._inWatchlist ? `film-card__controls-item--active` : ``}" data-action="${Actions.ADD_TO_WATCHLIST.TYPE}">Add to watchlist</button>
+            <button class="film-card__controls-item button film-card__controls-item--mark-as-watched ${this._isWatched ? `film-card__controls-item--active` : ``}" data-action="${Actions.MARK_AS_WATCHED.TYPE}">Mark as watched</button>
+            <button class="film-card__controls-item button film-card__controls-item--favorite ${this._isFavorite ? `film-card__controls-item--active` : ``}" data-action="${Actions.ADD_TO_FAVORITES.TYPE}">Mark as favorite</button>
           </form>
         </article>`;
   }

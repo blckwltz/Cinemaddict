@@ -1,8 +1,7 @@
-import {getRandomNumber, getRandomItem, shuffleList} from "./util";
+import {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, MONTHS, Description, Years, UserRating} from "./utils/constants";
+import {getRandomNumber, getRandomItem, shuffleList} from "./utils/util";
 
-const MONTHS = new Set([`January`, `February`, `March`, `April`, `May`, `June`, `July`, `August`, `September`, `October`, `November`, `December`]);
-
-const filmsAmount = getRandomNumber(50);
+const filmsAmount = getRandomNumber(MAX_FILMS_AMOUNT);
 const strings = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus`.split(`. `);
 const titles = [`The Big Lebowski`, `Django the Unchained`, `Dead Man`, `Deathproof`, `Lord of the Rings: Fellowship of the Ring`, `Hangover`, `Back to the Future`, `Pirates of the Carribean`, `The Matrix`, `American Pie`, `Interstellar`, `Forrest Gump`, `Fight Club`, `Pulp Fiction`, `The Godfather`];
 const genres = new Set([`Musical`, `Western`, `Drama`, `Comedy`, `Cartoon`, `Mystery`]);
@@ -33,59 +32,56 @@ const emojis = [
 ];
 
 const getDescription = (short = true) => {
-  const description = shuffleList(strings).slice(0, getRandomNumber(3, 1)).join(`. `);
+  const description = shuffleList(strings).slice(0, getRandomNumber(Description.SENTENCES.MAX, Description.SENTENCES.MIN)).join(`. `);
   if (short) {
-    return description.length < 140 ? `${description}.` : `${description.slice(0, 139).trim()}…`;
+    return description.length < Description.LENGTH.MAX ? `${description}.` : `${description.slice(0, Description.LENGTH.TO_DISPLAY).trim()}…`;
   }
   return `${description}.`;
 };
 const getRating = () => {
-  const firstDigit = getRandomNumber(9);
-  return firstDigit < 9 ? `${firstDigit}.${getRandomNumber(9)}` : `${firstDigit}.0`;
+  const firstDigit = getRandomNumber(MAX_RATING);
+  return firstDigit < MAX_RATING ? `${firstDigit}.${getRandomNumber(MAX_RATING)}` : `${firstDigit}.0`;
 };
 const getDuration = () => `${getRandomNumber(2)}h ${getRandomNumber(59, 1)}m`;
 
 const getFilmCard = () => ({
   title: getRandomItem(titles),
   rating: getRating(),
-  year: `${getRandomNumber(2019, 1929)}`,
+  year: `${getRandomNumber(Years.MAX, Years.MIN)}`,
   duration: getDuration(),
   genre: getRandomItem(genres),
   poster: getRandomItem(posters),
   description: getDescription(),
-  commentsAmount: `${getRandomNumber(300)}`,
+  commentsAmount: `${getRandomNumber(MAX_COMMENTS_AMOUNT)}`,
   inWatchlist: Boolean(getRandomNumber(1)),
   isWatched: Boolean(getRandomNumber(1)),
   isFavorite: Boolean(getRandomNumber(1)),
   details: {
-    age: `${getRandomNumber(21)}+`,
+    age: `${getRandomNumber(MAX_AGE)}+`,
     director: getRandomItem(names),
     writers: new Array(...new Array(3)).map(() => getRandomItem(names)),
     actors: new Array(...new Array(3)).map(() => getRandomItem(names)),
-    releaseDate: `${getRandomNumber(31, 1)} ${getRandomItem(MONTHS)} ${getRandomNumber(2019, 1929)}`,
+    releaseDate: `${getRandomNumber(31, 1)} ${getRandomItem(MONTHS)} ${getRandomNumber(Years.MAX, Years.MIN)}`,
     country: getRandomItem(countries),
     genres: new Array(...new Array(3)).map(() => getRandomItem(genres)),
     description: getDescription(false),
     comments: {
-      amount: getRandomNumber(50),
-      comment: {
-        text: getDescription(false),
-        author: getRandomItem(names),
-        date: `${getRandomNumber(10, 2)} days ago`,
-        emojis,
-      },
+      commentText: getDescription(false),
+      commentAuthor: getRandomItem(names),
+      commentDate: `${getRandomNumber(10, 2)} days ago`,
+      emojis,
     },
   },
 });
 
 const getUserTitle = (amount) => {
   let title = ``;
-  if (amount >= 1 && amount <= 10) {
-    title = `Novice`;
-  } else if (amount >= 11 && amount <= 20) {
-    title = `Fan`;
-  } else if (amount > 21) {
-    title = `Movie Buff`;
+  if (amount >= UserRating.MILESTONES.FIRST && amount <= UserRating.MILESTONES.SECOND) {
+    title = UserRating.TITLES.FIRST;
+  } else if (amount >= UserRating.MILESTONES.THIRD && amount <= UserRating.MILESTONES.FOURTH) {
+    title = UserRating.TITLES.SECOND;
+  } else if (amount > UserRating.MILESTONES.FIFTH) {
+    title = UserRating.TITLES.THIRD;
   }
   return title;
 };

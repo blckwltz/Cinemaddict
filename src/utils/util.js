@@ -1,3 +1,5 @@
+import {Position} from "./constants";
+
 const getRandomNumber = (max, min = 0) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -11,12 +13,8 @@ const shuffleList = (list) => {
   return list;
 };
 const getRandomItem = (list) => {
-  const array = Array.from(list);
+  const array = Array.isArray(list) ? list : Array.from(list);
   return array[getRandomNumber(array.length - 1)];
-};
-const Position = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
 };
 const createElement = (template) => {
   const containerElement = document.createElement(`div`);

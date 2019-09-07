@@ -1,17 +1,20 @@
 import {Actions} from "../utils/constants";
+import {removeElement, renderElement} from "../utils/util";
 import FilmCard from "../components/film-card";
 import FilmDetails from "../components/film-details";
-import {createElement, removeElement, renderElement} from "../utils/util";
+import Comment from "../components/comment";
 import moment from "moment";
 
-export default class MovieController {
+export default class FilmController {
   constructor(container, data, onDataChange, onChangeView) {
     this._container = container;
     this._data = data;
     this._onDataChange = onDataChange;
     this._onChangeView = onChangeView;
-    this._filmCard = new FilmCard(data);
-    this._filmDetails = new FilmDetails(data);
+
+    this._filmCard = new FilmCard(this._data);
+    this._filmDetails = new FilmDetails(this._data);
+    this._comment = new Comment({});
 
     this.init();
   }
@@ -51,32 +54,52 @@ export default class MovieController {
       }
     };
 
+    const onDeleteButtonClick = (evt) => {
+      evt.preventDefault();
+      this._data.comments[this._data.comments.findIndex((item) => new Comment(item).getElement().contains(evt.target))] = null;
+      this._onDataChange(this._data, this._data);
+    };
+
     const onEnterKeyDown = (evt) => {
       const commentFieldElement = this._filmDetails.getElement().querySelector(`.film-details__comment-input`);
-      const commentsListElement = this._filmDetails.getElement().querySelector(`.film-details__comments-list`);
+      const checkedInputElement = this._filmDetails.getElement().querySelector(`.film-details__emoji-item:checked`);
 
       if ((evt.key === `Enter` && evt.metaKey) || (evt.key === `Enter` && evt.ctrlKey)) {
-        const commentElement = createElement(`<li class="film-details__comment">
-            <span class="film-details__comment-emoji">
-              <img src="${this._filmDetails.getElement().querySelector(`.film-details__add-emoji-label img`).src}" width="55" height="55" alt="emoji">
-            </span>
-            <div>
-              <p class="film-details__comment-text">${commentFieldElement.value}</p>
-              <p class="film-details__comment-info">
-                <span class="film-details__comment-day">${moment().fromNow()}</span>
-                <button class="film-details__comment-delete">Delete</button>
-              </p>
-            </div>
-          </li>`);
-        commentsListElement.appendChild(commentElement);
-        removeElement(this._filmDetails.getElement().querySelector(`.film-details__add-emoji-label img`));
-        commentFieldElement.value = ``;
+        if (!commentFieldElement.value || !checkedInputElement) {
+          return;
+        }
+
+        const entry = {
+          text: commentFieldElement.value,
+          author: ``,
+          date: moment().fromNow(),
+          emoji: {
+            id: checkedInputElement.id,
+            value: checkedInputElement.value,
+            source: this._filmDetails.getElement().querySelector(`.film-details__add-emoji-label img`).src,
+          },
+        };
+        this._data.comments.unshift(entry);
+        this._onDataChange(this._data, this._data);
       }
     };
 
     const renderFilmDetails = () => {
       this._onChangeView();
       renderElement(document.body, this._filmDetails.getElement());
+      this._data.comments.forEach((item) => {
+        this._comment = new Comment(item);
+        renderElement(this._filmDetails.getElement().querySelector(`.film-details__comments-list`), this._comment.getElement());
+        this._comment.getElement().addEventListener(`click`, (evt) => {
+          if (evt.target.tagName === `BUTTON`) {
+            removeElement(this._comment.getElement());
+            this._comment.removeElement();
+          }
+        });
+      });
+      this._filmDetails.getElement().querySelectorAll(`.film-details__comment-delete`).forEach((element) => element.addEventListener(`click`, (evt) => {
+        onDeleteButtonClick(evt);
+      }));
       this._filmDetails.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
         hideFilmDetails();
         document.removeEventListener(`keydown`, onEscKeyDown);

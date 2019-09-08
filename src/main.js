@@ -27,9 +27,11 @@ renderElement(headerElement, profileRating.getElement());
 renderElement(mainElement, menu.getElement());
 statisticsElement.textContent = `${filmCards.length} movies inside`;
 
-const searchController = new SearchController(mainElement, search, filmCards);
+const searchController = new SearchController(mainElement, search, filmCards, onDataChange);
 const pageController = new PageController(mainElement, onDataChange);
 
+searchController.init();
+pageController.init();
 pageController.show(filmCards);
 
 menu.getElement().addEventListener(`click`, (evt) => {

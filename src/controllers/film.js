@@ -14,13 +14,17 @@ export default class FilmController {
 
     this._filmCard = new FilmCard(this._data);
     this._filmDetails = new FilmDetails(this._data);
-    this._comment = new Comment({});
-
-    this.init();
   }
 
   init() {
     const hideFilmDetails = () => {
+      const chosenRating = this._filmDetails.getElement().querySelector(`.film-details__user-rating-input:checked`);
+
+      if (chosenRating) {
+        this._data.userRating = chosenRating.value;
+        this._onDataChange(this._data, this._data);
+      }
+
       removeElement(this._filmDetails.getElement());
       this._filmDetails.removeElement();
     };
@@ -45,6 +49,11 @@ export default class FilmController {
           break;
         case Actions.MARK_AS_WATCHED.TYPE:
           this._data.isWatched = !this._data.isWatched;
+
+          if (this._data.userRating) {
+            this._data.userRating = null;
+          }
+
           this._onDataChange(this._data, this._data);
           break;
         case Actions.ADD_TO_FAVORITES.TYPE:
@@ -87,17 +96,15 @@ export default class FilmController {
       renderElement(document.body, this._filmDetails.getElement());
       const commentsList = this._filmDetails.getElement().querySelector(`.film-details__comments-list`);
       this._data.comments.forEach((item) => {
-        this._comment = new Comment(item);
-        renderElement(commentsList, this._comment.getElement());
-        this._comment.getElement().addEventListener(`click`, (evt) => {
-          if (isButtonTag(evt.target.tagName)) {
-            evt.preventDefault();
-            removeElement(this._comment.getElement());
-            this._comment.removeElement();
-            const index = this._data.comments.findIndex((comment) => comment === item);
-            this._data.comments = [...this._data.comments.slice(0, index), ...this._data.comments.slice(index + 1)];
-            this._onDataChange(this._data, this._data);
-          }
+        const comment = new Comment(item);
+        renderElement(commentsList, comment.getElement());
+        comment.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, (evt) => {
+          evt.preventDefault();
+          removeElement(comment.getElement());
+          comment.removeElement();
+          const index = this._data.comments.findIndex((currentComment) => currentComment === item);
+          this._data.comments = [...this._data.comments.slice(0, index), ...this._data.comments.slice(index + 1)];
+          this._onDataChange(this._data, this._data);
         });
       });
       this._filmDetails.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {

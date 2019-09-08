@@ -23,8 +23,6 @@ export default class PageController {
     this._noFilms = new NoFilms();
     this._showMoreButton = new ShowMoreButton();
     this._filmCardsController = new FilmCardsController(null, this._onDataChange.bind(this));
-
-    this._init();
   }
 
   show(cards) {
@@ -41,7 +39,7 @@ export default class PageController {
     this._films.getElement().classList.add(`visually-hidden`);
   }
 
-  _init() {
+  init() {
     renderElement(this._container, this._sort.getElement());
     this._sort.getElement().addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
     renderElement(this._container, this._films.getElement());

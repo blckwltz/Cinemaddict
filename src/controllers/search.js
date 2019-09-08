@@ -16,8 +16,6 @@ export default class SearchController {
     this._noResult = new SearchNoResult();
     this._filmsList = new FilmsList(false, ListTitles.GENERAL);
     this._filmCardsController = new FilmCardsController(null, this._onDataChange.bind(this));
-
-    this._init();
   }
 
   show() {
@@ -32,7 +30,7 @@ export default class SearchController {
     this._filmsList.getElement().classList.add(`visually-hidden`);
   }
 
-  _init() {
+  init() {
     this.hide();
     this._search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
       if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {

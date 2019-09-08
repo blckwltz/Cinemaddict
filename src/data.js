@@ -1,4 +1,4 @@
-import {MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, Description, UserRating} from "./utils/constants";
+import {MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, Description, UserRating, Rating} from "./utils/constants";
 import {getRandomNumber, getRandomItem, getRandomDate, shuffleList} from "./utils/util";
 import moment from "moment";
 
@@ -67,6 +67,7 @@ const getFilmCard = () => ({
   isWatched: Boolean(getRandomNumber(1)),
   isFavorite: Boolean(getRandomNumber(1)),
   comments: [...new Array(getCommentsAmount())].map(getComment),
+  userRating: null,
   details: {
     age: `${getRandomNumber(MAX_AGE)}+`,
     director: getRandomItem(names),

@@ -25,6 +25,7 @@ export default class FilmCardsController {
 
   _renderFilmCard(card) {
     const filmController = new FilmController(this._container, card, this._onDataChange, this._onChangeView);
+    filmController.init();
     this._subscriptions.push(filmController.setDefaultView.bind(filmController));
   }
 

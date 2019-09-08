@@ -6,7 +6,7 @@ import Comment from "./comment";
 import moment from "moment";
 
 export default class FilmDetails extends AbstractComponent {
-  constructor({title, rating, duration, poster, commentsAmount, inWatchlist, isWatched, isFavorite, details: {age, director, writers, actors, releaseDate, country, genres, description, emojis}}) {
+  constructor({title, rating, duration, poster, commentsAmount, inWatchlist, isWatched, isFavorite, userRating, details: {age, director, writers, actors, releaseDate, country, genres, description, emojis}}) {
     super();
     this._title = title;
     this._rating = rating;
@@ -16,6 +16,7 @@ export default class FilmDetails extends AbstractComponent {
     this._inWatchlist = inWatchlist;
     this._isWatched = isWatched;
     this._isFavorite = isFavorite;
+    this._userRating = userRating;
     this._details = {
       _age: age,
       _director: director,
@@ -54,7 +55,7 @@ export default class FilmDetails extends AbstractComponent {
 
             <div class="film-details__rating">
               <p class="film-details__total-rating">${this._rating}</p>
-              <p class="film-details__user-rating"></p>
+              <p class="film-details__user-rating">${this._userRating ? `Your rate ${this._userRating}` : ``}</p>
             </div>
           </div>
 
@@ -148,10 +149,21 @@ export default class FilmDetails extends AbstractComponent {
     };
     const onUndoButtonClick = () => {
       userRatingElement.textContent = ``;
+      const chosenRating = this.getElement().querySelector(`.film-details__user-rating-input:checked`);
+
+      if (chosenRating) {
+        chosenRating.checked = false;
+      }
     };
     const renderUserRatingElement = () => {
       renderElement(this.getElement().querySelector(`.form-details__middle-container`), userRating.getElement());
-      userRating.getElement().querySelectorAll(`.film-details__user-rating-input`).forEach((element) => element.addEventListener(`change`, (evt) => onRatingInputChange(evt)));
+      userRating.getElement().querySelectorAll(`.film-details__user-rating-input`).forEach((element) => {
+        element.addEventListener(`change`, (evt) => onRatingInputChange(evt));
+
+        if (element.value === this._userRating) {
+          element.checked = true;
+        }
+      });
       userRating.getElement().querySelector(`.film-details__watched-reset`).addEventListener(`click`, () => onUndoButtonClick());
     };
     const renderCommentElement = (evt) => {
@@ -181,12 +193,18 @@ export default class FilmDetails extends AbstractComponent {
 
     this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, () => {
       if (this.getElement().contains(userRating.getElement())) {
+        const chosenRating = this.getElement().querySelector(`.film-details__user-rating-input:checked`);
+
+        if (chosenRating) {
+          chosenRating.checked = false;
+        }
+
+        userRatingElement.textContent = ``;
         removeElement(userRating.getElement());
         userRating.removeElement();
-        return;
+      } else {
+        renderUserRatingElement();
       }
-
-      renderUserRatingElement();
     });
 
     this.getElement().querySelectorAll(`.film-details__emoji-label`).forEach((element) => {

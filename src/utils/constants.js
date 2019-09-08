@@ -31,6 +31,10 @@ const UserRating = {
     THIRD: `Movie Buff`,
   },
 };
+const Rating = {
+  MIN: 1,
+  MAX: 9,
+};
 const Position = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
@@ -85,4 +89,4 @@ const Modes = {
   SEARCH: `search`,
 };
 
-export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, Description, UserRating, Position, TagNames, ListTitles, Sorting, Actions, Screens, Modes};
+export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, Description, UserRating, Rating, Position, TagNames, ListTitles, Sorting, Actions, Screens, Modes};

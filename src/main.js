@@ -1,5 +1,5 @@
 import {MAX_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, Screens} from "./utils/constants";
-import {getRandomNumber, removeElement, renderElement} from "./utils/util";
+import {getRandomNumber, isATag, removeElement, renderElement} from "./utils/util";
 import {getFilmCard} from "./data";
 import PageController from "./controllers/page";
 import SearchController from "./controllers/search";
@@ -27,13 +27,13 @@ renderElement(headerElement, profileRating.getElement());
 renderElement(mainElement, menu.getElement());
 statisticsElement.textContent = `${filmCards.length} movies inside`;
 
-const searchController = new SearchController(mainElement, search);
+const searchController = new SearchController(mainElement, search, filmCards);
 const pageController = new PageController(mainElement, onDataChange);
 
 pageController.show(filmCards);
 
 menu.getElement().addEventListener(`click`, (evt) => {
-  if (evt.target.tagName !== `A`) {
+  if (!isATag(evt.target.tagName)) {
     return;
   }
 
@@ -46,21 +46,29 @@ menu.getElement().addEventListener(`click`, (evt) => {
   switch (evt.target.dataset.screen) {
     case Screens.ALL.TYPE:
       pageController.show(filmCards);
+      searchController.hide();
       removeElement(statistics.getElement());
       statistics.removeElement();
       break;
     case Screens.STATS.TYPE:
       pageController.hide();
+      searchController.hide();
       renderElement(mainElement, statistics.getElement());
       break;
   }
 });
 
-search.getElement().addEventListener(`keyup`, (evt) => {
+search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
   if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
+    searchController.show();
     pageController.hide();
   } else {
     searchController.hide();
     pageController.show(filmCards);
   }
+});
+
+search.getElement().querySelector(`.search__reset`).addEventListener(`click`, () => {
+  searchController.hide();
+  pageController.show(filmCards);
 });

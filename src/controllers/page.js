@@ -1,5 +1,5 @@
 import {GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, ListTitles, Sorting} from "../utils/constants";
-import {renderElement, removeElement} from "../utils/util";
+import {renderElement, removeElement, isATag} from "../utils/util";
 import FilmCardsController from "./film-cards";
 import Sort from "../components/sort";
 import Films from "../components/films";
@@ -102,7 +102,7 @@ export default class PageController {
 
   _onSortLinkClick(evt) {
     evt.preventDefault();
-    if (evt.target.tagName !== `A`) {
+    if (!isATag(evt.target.tagName)) {
       return;
     }
 

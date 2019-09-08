@@ -1,5 +1,5 @@
 import {Actions} from "../utils/constants";
-import {removeElement, renderElement} from "../utils/util";
+import {isButtonTag, removeElement, renderElement} from "../utils/util";
 import FilmCard from "../components/film-card";
 import FilmDetails from "../components/film-details";
 import Comment from "../components/comment";
@@ -33,7 +33,7 @@ export default class FilmController {
     };
 
     const onControlButtonClick = (evt) => {
-      if (evt.target.tagName === `BUTTON`) {
+      if (isButtonTag(evt.target.tagName)) {
         evt.preventDefault();
         evt.target.classList.toggle(`film-card__controls-item--active`);
       }
@@ -54,15 +54,10 @@ export default class FilmController {
       }
     };
 
-    const onDeleteButtonClick = (evt) => {
-      evt.preventDefault();
-      this._data.comments[this._data.comments.findIndex((item) => new Comment(item).getElement().contains(evt.target))] = null;
-      this._onDataChange(this._data, this._data);
-    };
-
     const onEnterKeyDown = (evt) => {
       const commentFieldElement = this._filmDetails.getElement().querySelector(`.film-details__comment-input`);
       const checkedInputElement = this._filmDetails.getElement().querySelector(`.film-details__emoji-item:checked`);
+      const chosenEmoji = this._filmDetails.getElement().querySelector(`.film-details__add-emoji-label img`);
 
       if ((evt.key === `Enter` && evt.metaKey) || (evt.key === `Enter` && evt.ctrlKey)) {
         if (!commentFieldElement.value || !checkedInputElement) {
@@ -76,30 +71,35 @@ export default class FilmController {
           emoji: {
             id: checkedInputElement.id,
             value: checkedInputElement.value,
-            source: this._filmDetails.getElement().querySelector(`.film-details__add-emoji-label img`).src,
+            source: chosenEmoji.src,
           },
         };
         this._data.comments.unshift(entry);
         this._onDataChange(this._data, this._data);
+        commentFieldElement.value = ``;
+        checkedInputElement.checked = false;
+        removeElement(chosenEmoji);
       }
     };
 
     const renderFilmDetails = () => {
       this._onChangeView();
       renderElement(document.body, this._filmDetails.getElement());
+      const commentsList = this._filmDetails.getElement().querySelector(`.film-details__comments-list`);
       this._data.comments.forEach((item) => {
         this._comment = new Comment(item);
-        renderElement(this._filmDetails.getElement().querySelector(`.film-details__comments-list`), this._comment.getElement());
+        renderElement(commentsList, this._comment.getElement());
         this._comment.getElement().addEventListener(`click`, (evt) => {
-          if (evt.target.tagName === `BUTTON`) {
+          if (isButtonTag(evt.target.tagName)) {
+            evt.preventDefault();
             removeElement(this._comment.getElement());
             this._comment.removeElement();
+            const index = this._data.comments.findIndex((comment) => comment === item);
+            this._data.comments = [...this._data.comments.slice(0, index), ...this._data.comments.slice(index + 1)];
+            this._onDataChange(this._data, this._data);
           }
         });
       });
-      this._filmDetails.getElement().querySelectorAll(`.film-details__comment-delete`).forEach((element) => element.addEventListener(`click`, (evt) => {
-        onDeleteButtonClick(evt);
-      }));
       this._filmDetails.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
         hideFilmDetails();
         document.removeEventListener(`keydown`, onEscKeyDown);
@@ -112,7 +112,7 @@ export default class FilmController {
       });
       document.addEventListener(`keydown`, onEscKeyDown);
       this._filmDetails.getElement().querySelector(`.film-details__controls`).addEventListener(`click`, (evt) => onControlButtonClick(evt));
-      this._filmDetails.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, onEnterKeyDown);
+      this._filmDetails.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, (evt) => onEnterKeyDown(evt));
     };
 
     this._filmCard.getElement().querySelectorAll(`.film-card__title, .film-card__poster, .film-card__comments`).forEach((element) => element.addEventListener(`click`, renderFilmDetails));

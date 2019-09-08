@@ -154,21 +154,25 @@ export default class FilmDetails extends AbstractComponent {
       userRating.getElement().querySelectorAll(`.film-details__user-rating-input`).forEach((element) => element.addEventListener(`change`, (evt) => onRatingInputChange(evt)));
       userRating.getElement().querySelector(`.film-details__watched-reset`).addEventListener(`click`, () => onUndoButtonClick());
     };
-    const renderCommentElement = () => {
+    const renderCommentElement = (evt) => {
       const commentFieldElement = this.getElement().querySelector(`.film-details__comment-input`);
       const checkedInputElement = this.getElement().querySelector(`.film-details__emoji-item:checked`);
       const chosenEmoji = this.getElement().querySelector(`.film-details__add-emoji-label img`);
 
-      if (!commentFieldElement.value || !checkedInputElement) {
-        return;
-      }
+      if ((evt.key === `Enter` && evt.metaKey) || (evt.key === `Enter` && evt.ctrlKey)) {
+        if (!commentFieldElement.value || !checkedInputElement) {
+          return;
+        }
 
-      const commentElement = new Comment({text: commentFieldElement.value, author: ``, date: moment().fromNow(), emoji: chosenEmoji.src});
-      renderElement(this.getElement().querySelector(`.film-details__comments-list`), commentElement.getElement(), Position.AFTERBEGIN);
-      commentFieldElement.value = ``;
-      commentFieldElement.blur();
-      checkedInputElement.checked = false;
-      removeElement(chosenEmoji);
+        const commentElement = new Comment({
+          text: commentFieldElement.value,
+          author: ``,
+          date: moment().fromNow(),
+          emoji: chosenEmoji.src,
+        });
+        renderElement(this.getElement().querySelector(`.film-details__comments-list`), commentElement.getElement(), Position.AFTERBEGIN);
+        commentFieldElement.blur();
+      }
     };
 
     if (this.getElement().querySelector(`#watched`).checked) {
@@ -193,10 +197,6 @@ export default class FilmDetails extends AbstractComponent {
       });
     });
 
-    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, (evt) => {
-      if ((evt.key === `Enter` && evt.metaKey) || (evt.key === `Enter` && evt.ctrlKey)) {
-        renderCommentElement();
-      }
-    });
+    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, (evt) => renderCommentElement(evt));
   }
 }

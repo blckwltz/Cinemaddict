@@ -87,19 +87,6 @@ export default class PageController {
     }
   }
 
-  _setFilmCards(cards) {
-    this._cards = cards;
-    this._generalAmount = GENERAL_FILMS_AMOUNT;
-    this._renderFilmLists();
-  }
-
-  _onDataChange(cards) {
-    this._cards = cards;
-    this._onDataChangeMain(this._cards);
-
-    this._renderFilmLists();
-  }
-
   _onSortLinkClick(evt) {
     evt.preventDefault();
     if (!isATag(evt.target.tagName)) {
@@ -144,5 +131,16 @@ export default class PageController {
       removeElement(this._showMoreButton.getElement());
       this._showMoreButton.removeElement();
     }
+  }
+
+  _setFilmCards(cards) {
+    this._cards = cards;
+    this._generalAmount = GENERAL_FILMS_AMOUNT;
+    this._renderFilmLists();
+  }
+
+  _onDataChange() {
+    this._onDataChangeMain(this._cards);
+    this._renderFilmLists();
   }
 }

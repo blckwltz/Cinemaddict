@@ -1,4 +1,4 @@
-import {Position} from "./constants";
+import {Position, TagNames} from "./constants";
 
 const getRandomNumber = (max, min = 0) => {
   min = Math.ceil(min);
@@ -37,5 +37,7 @@ const removeElement = (element) => {
     element.remove();
   }
 };
+const isATag = (tagName) => tagName === TagNames.A;
+const isButtonTag = (tagName) => tagName === TagNames.BUTTON;
 
-export {getRandomNumber, shuffleList, getRandomItem, getRandomDate, createElement, renderElement, removeElement};
+export {getRandomNumber, shuffleList, getRandomItem, getRandomDate, createElement, renderElement, removeElement, isATag, isButtonTag};

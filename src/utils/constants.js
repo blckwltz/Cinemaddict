@@ -1,10 +1,11 @@
 const MAX_FILMS_AMOUNT = 50;
 const MAX_RATING = 9;
-const MAX_COMMENTS_AMOUNT = 300;
+const MAX_COMMENTS_AMOUNT = 10;
 const MAX_AGE = 21;
 const EARLIEST_RELEASE_DATE = `1929-01-01`;
 const GENERAL_FILMS_AMOUNT = 5;
 const CATEGORY_FILMS_AMOUNT = 2;
+const MIN_SEARCH_STRING_LENGTH = 3;
 
 const Description = {
   SENTENCES: {
@@ -30,9 +31,17 @@ const UserRating = {
     THIRD: `Movie Buff`,
   },
 };
+const Rating = {
+  MIN: 1,
+  MAX: 9,
+};
 const Position = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
+};
+const TagNames = {
+  A: `A`,
+  BUTTON: `BUTTON`,
 };
 const ListTitles = {
   GENERAL: `All movies. Upcoming`,
@@ -67,5 +76,17 @@ const Actions = {
     TYPE: `add to favorites`,
   },
 };
+const Screens = {
+  ALL: {
+    TYPE: `all`,
+  },
+  STATS: {
+    TYPE: `stats`,
+  },
+};
+const Modes = {
+  VIEW: `view`,
+  SEARCH: `search`,
+};
 
-export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, Description, UserRating, Position, ListTitles, Sorting, Actions};
+export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, Description, UserRating, Rating, Position, TagNames, ListTitles, Sorting, Actions, Screens, Modes};

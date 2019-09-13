@@ -1,6 +1,6 @@
 import AbstractComponent from "./abstract-component";
 
-export default class Comment extends AbstractComponent {
+export default class Comments extends AbstractComponent {
   constructor({text, author, date, emoji}) {
     super();
     this._text = text;

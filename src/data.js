@@ -1,4 +1,4 @@
-import {MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, Description, UserRating, Rating} from "./utils/constants";
+import {MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, Description, UserRating, Duration} from "./utils/constants";
 import {getRandomNumber, getRandomItem, getRandomDate, shuffleList} from "./utils/util";
 import moment from "moment";
 
@@ -42,7 +42,6 @@ const getRating = () => {
   const firstDigit = getRandomNumber(MAX_RATING);
   return firstDigit < MAX_RATING ? `${firstDigit}.${getRandomNumber(MAX_RATING)}` : `${firstDigit}.0`;
 };
-const getDuration = () => `${getRandomNumber(2)}h ${getRandomNumber(59, 1)}m`;
 const getCommentsAmount = () => getRandomNumber(MAX_COMMENTS_AMOUNT);
 const getComment = () => ({
   text: getDescription(false),
@@ -56,7 +55,7 @@ const getFilmCard = () => ({
   rating: getRating(),
   year: `${moment(getRandomDate(new Date(EARLIEST_RELEASE_DATE), new Date()))
     .format(`YYYY`)}`,
-  duration: getDuration(),
+  duration: getRandomNumber(Duration.MAX, Duration.MIN),
   genre: getRandomItem(genres),
   poster: getRandomItem(posters),
   description: getDescription(),

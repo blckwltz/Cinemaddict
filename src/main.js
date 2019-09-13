@@ -1,12 +1,12 @@
-import {MAX_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, Screens} from "./utils/constants";
-import {getRandomNumber, isATag, removeElement, renderElement} from "./utils/util";
+import {MAX_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH} from "./utils/constants";
+import {getRandomNumber, renderElement} from "./utils/util";
 import {getFilmCard} from "./data";
 import PageController from "./controllers/page";
 import SearchController from "./controllers/search";
+import MenuController from "./controllers/menu";
+// import StatisticsController from "./controllers/statistics";
 import Search from "./components/search";
 import ProfileRating from "./components/profile-rating";
-import Menu from "./components/menu";
-import Statistics from "./components/statistics";
 
 const filmsAmount = getRandomNumber(MAX_FILMS_AMOUNT);
 let filmCards = [...new Array(filmsAmount)].map(getFilmCard);
@@ -15,8 +15,6 @@ const mainElement = document.querySelector(`.main`);
 const statisticsElement = document.querySelector(`.footer__statistics p`);
 const search = new Search();
 const profileRating = new ProfileRating(filmCards);
-const menu = new Menu(filmCards);
-const statistics = new Statistics();
 
 const onDataChange = (cards) => {
   filmCards = cards;
@@ -24,41 +22,17 @@ const onDataChange = (cards) => {
 
 renderElement(headerElement, search.getElement());
 renderElement(headerElement, profileRating.getElement());
-renderElement(mainElement, menu.getElement());
 statisticsElement.textContent = `${filmCards.length} movies inside`;
 
 const searchController = new SearchController(mainElement, search, filmCards, onDataChange);
-const pageController = new PageController(mainElement, onDataChange);
+const pageController = new PageController(mainElement, filmCards, onDataChange);
+// const statisticsController = new StatisticsController(mainElement, filmCards, onDataChange);
+// const menuController = new MenuController(mainElement, filmCards, pageController, statisticsController, searchController, onDataChange);
 
 searchController.init();
+// menuController.init();
 pageController.init();
-pageController.show(filmCards);
-
-menu.getElement().addEventListener(`click`, (evt) => {
-  if (!isATag(evt.target.tagName)) {
-    return;
-  }
-
-  evt.preventDefault();
-  const activeClass = `main-navigation__item--active`;
-  const activeLinkElement = menu.getElement().querySelector(`.${activeClass}`);
-  activeLinkElement.classList.remove(activeClass);
-  evt.target.classList.add(activeClass);
-
-  switch (evt.target.dataset.screen) {
-    case Screens.ALL.TYPE:
-      pageController.show(filmCards);
-      searchController.hide();
-      removeElement(statistics.getElement());
-      statistics.removeElement();
-      break;
-    case Screens.STATS.TYPE:
-      pageController.hide();
-      searchController.hide();
-      renderElement(mainElement, statistics.getElement());
-      break;
-  }
-});
+// statisticsController.init();
 
 search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
   if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
@@ -66,11 +40,11 @@ search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
     pageController.hide();
   } else {
     searchController.hide();
-    pageController.show(filmCards);
+    pageController.show();
   }
 });
 
 search.getElement().querySelector(`.search__reset`).addEventListener(`click`, () => {
   searchController.hide();
-  pageController.show(filmCards);
+  pageController.show();
 });

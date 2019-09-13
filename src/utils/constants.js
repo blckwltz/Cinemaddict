@@ -35,6 +35,10 @@ const Rating = {
   MIN: 1,
   MAX: 9,
 };
+const Duration = {
+  MIN: 20,
+  MAX: 180,
+};
 const Position = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
@@ -51,6 +55,7 @@ const ListTitles = {
 const Sorting = {
   BY_DEFAULT: {
     TYPE: `default`,
+    FUNCTION: undefined,
   },
   BY_DATE: {
     TYPE: `date`,
@@ -88,5 +93,23 @@ const Modes = {
   VIEW: `view`,
   SEARCH: `search`,
 };
+const Filters = {
+  ALL: {
+    TYPE: `all`,
+    FUNCTION: (n) => n,
+  },
+  IN_WATCHLIST: {
+    TYPE: `in watchlist`,
+    FUNCTION: (n) => n.inWatchlist,
+  },
+  IS_WATCHED: {
+    TYPE: `is watched`,
+    FUNCTION: (n) => n.isWatched,
+  },
+  IS_FAVORITE: {
+    TYPE: `is favorite`,
+    FUNCTION: (n) => n.isFavorite,
+  },
+};
 
-export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, Description, UserRating, Rating, Position, TagNames, ListTitles, Sorting, Actions, Screens, Modes};
+export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, Description, UserRating, Rating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, Modes, Filters};

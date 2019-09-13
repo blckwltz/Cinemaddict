@@ -1,8 +1,10 @@
+import {getUserTitle} from "../data";
 import AbstractComponent from "./abstract-component";
 
 export default class Statistics extends AbstractComponent {
-  constructor() {
+  constructor(cards) {
     super();
+    this._cards = cards;
   }
 
   getTemplate() {
@@ -10,7 +12,7 @@ export default class Statistics extends AbstractComponent {
     <p class="statistic__rank">
       Your rank 
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35"> 
-      <span class="statistic__rank-label">Sci-Fighter</span>
+      <span class="statistic__rank-label">${getUserTitle(this._cards.filter((card) => card.isWatched).length)}</span>
     </p>
   
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -35,11 +37,19 @@ export default class Statistics extends AbstractComponent {
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">You watched</h4>
-        <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+        <p class="statistic__item-text">${this._cards.filter((card) => card.isWatched).length} <span class="statistic__item-description">movies</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+        <p class="statistic__item-text">${Math.ceil(this._cards.reduce((acc, card) => {
+    if (card.isWatched) {
+      acc = acc + card.duration;
+    } return acc;
+  }, 0) / 60)} <span class="statistic__item-description">h</span> ${this._cards.reduce((acc, card) => {
+  if (card.isWatched) {
+    acc = acc + card.duration;
+  } return acc;
+}, 0) % 60} <span class="statistic__item-description">m</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>

@@ -21,6 +21,7 @@ export default class FilmCardsController {
   addFilmCards(cards) {
     cards.forEach((card) => this._renderFilmCard(card));
     this._cards = this._cards.concat(cards);
+    console.log(cards);
   }
 
   _renderFilmCard(card) {

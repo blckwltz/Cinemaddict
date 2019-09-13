@@ -1,9 +1,7 @@
-import {Actions, Position} from "../utils/constants";
+import {Actions} from "../utils/constants";
 import {createElement, removeElement, renderElement} from "../utils/util";
 import AbstractComponent from "./abstract-component";
 import UserRating from "./user-rating";
-import Comment from "./comment";
-import moment from "moment";
 
 export default class FilmDetails extends AbstractComponent {
   constructor({title, rating, duration, poster, commentsAmount, inWatchlist, isWatched, isFavorite, userRating, details: {age, director, writers, actors, releaseDate, country, genres, description, emojis}}) {
@@ -78,7 +76,7 @@ export default class FilmDetails extends AbstractComponent {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${this._duration}</td>
+              <td class="film-details__cell">${Math.ceil(this._duration / 60)}h ${this._duration % 60}m</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
@@ -166,26 +164,6 @@ export default class FilmDetails extends AbstractComponent {
       });
       userRating.getElement().querySelector(`.film-details__watched-reset`).addEventListener(`click`, () => onUndoButtonClick());
     };
-    const renderCommentElement = (evt) => {
-      const commentFieldElement = this.getElement().querySelector(`.film-details__comment-input`);
-      const checkedInputElement = this.getElement().querySelector(`.film-details__emoji-item:checked`);
-      const chosenEmoji = this.getElement().querySelector(`.film-details__add-emoji-label img`);
-
-      if ((evt.key === `Enter` && evt.metaKey) || (evt.key === `Enter` && evt.ctrlKey)) {
-        if (!commentFieldElement.value || !checkedInputElement) {
-          return;
-        }
-
-        const commentElement = new Comment({
-          text: commentFieldElement.value,
-          author: ``,
-          date: moment().fromNow(),
-          emoji: chosenEmoji.src,
-        });
-        renderElement(this.getElement().querySelector(`.film-details__comments-list`), commentElement.getElement(), Position.AFTERBEGIN);
-        commentFieldElement.blur();
-      }
-    };
 
     if (this.getElement().querySelector(`#watched`).checked) {
       renderUserRatingElement();
@@ -214,7 +192,5 @@ export default class FilmDetails extends AbstractComponent {
         this.getElement().querySelector(`.film-details__add-emoji-label`).appendChild(createElement(`<img src="${imageElement.src}" width="55" height="55" alt="emoji">`));
       });
     });
-
-    this.getElement().querySelector(`.film-details__comment-input`).addEventListener(`keydown`, (evt) => renderCommentElement(evt));
   }
 }

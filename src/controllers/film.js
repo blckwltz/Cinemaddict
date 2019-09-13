@@ -2,7 +2,7 @@ import {Actions} from "../utils/constants";
 import {isButtonTag, removeElement, renderElement} from "../utils/util";
 import FilmCard from "../components/film-card";
 import FilmDetails from "../components/film-details";
-import Comment from "../components/comment";
+import Comments from "../components/comments";
 import moment from "moment";
 
 export default class FilmController {
@@ -27,6 +27,22 @@ export default class FilmController {
 
       removeElement(this._filmDetails.getElement());
       this._filmDetails.removeElement();
+    };
+
+    const renderCommentsList = () => {
+      const commentsList = this._filmDetails.getElement().querySelector(`.film-details__comments-list`);
+      commentsList.innerHTML = ``;
+      this._data.comments.forEach((item) => {
+        const comment = new Comments(item);
+        renderElement(commentsList, comment.getElement());
+        comment.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, (evt) => {
+          evt.preventDefault();
+          const index = this._data.comments.findIndex((currentComment) => currentComment === item);
+          this._data.comments = [...this._data.comments.slice(0, index), ...this._data.comments.slice(index + 1)];
+          this._onDataChange(this._data, this._data);
+          renderCommentsList();
+        });
+      });
     };
 
     const onEscKeyDown = (evt) => {
@@ -86,27 +102,17 @@ export default class FilmController {
         this._data.comments.unshift(entry);
         this._onDataChange(this._data, this._data);
         commentFieldElement.value = ``;
+        commentFieldElement.blur();
         checkedInputElement.checked = false;
         removeElement(chosenEmoji);
+        renderCommentsList();
       }
     };
 
     const renderFilmDetails = () => {
       this._onChangeView();
       renderElement(document.body, this._filmDetails.getElement());
-      const commentsList = this._filmDetails.getElement().querySelector(`.film-details__comments-list`);
-      this._data.comments.forEach((item) => {
-        const comment = new Comment(item);
-        renderElement(commentsList, comment.getElement());
-        comment.getElement().querySelector(`.film-details__comment-delete`).addEventListener(`click`, (evt) => {
-          evt.preventDefault();
-          removeElement(comment.getElement());
-          comment.removeElement();
-          const index = this._data.comments.findIndex((currentComment) => currentComment === item);
-          this._data.comments = [...this._data.comments.slice(0, index), ...this._data.comments.slice(index + 1)];
-          this._onDataChange(this._data, this._data);
-        });
-      });
+      renderCommentsList();
       this._filmDetails.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
         hideFilmDetails();
         document.removeEventListener(`keydown`, onEscKeyDown);

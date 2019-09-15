@@ -1,5 +1,5 @@
 import {Filters, ListTitles, Position, Screens} from "../utils/constants";
-import {isATag, removeElement, renderElement} from "../utils/util";
+import {isATag, removeElement, renderElement} from "../utils/utils";
 import FilmCardsController from "./film-cards";
 import Menu from "../components/menu";
 import FilmsList from "../components/films-list";

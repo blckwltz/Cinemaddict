@@ -1,5 +1,5 @@
 import {Actions} from "../utils/constants";
-import {isButtonTag, removeElement, renderElement} from "../utils/util";
+import {isButtonTag, removeElement, renderElement} from "../utils/utils";
 import FilmCard from "../components/film-card";
 import FilmDetails from "../components/film-details";
 import Comments from "../components/comments";

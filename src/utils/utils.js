@@ -13,7 +13,7 @@ const shuffleList = (list) => {
   return list;
 };
 const getRandomItem = (list) => {
-  const array = Array.isArray(list) ? list : Array.from(list);
+  const array = Array.isArray(list) ? list : [...list];
   return array[getRandomNumber(array.length - 1)];
 };
 const getRandomDate = (start, end) => new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
@@ -39,5 +39,12 @@ const removeElement = (element) => {
 };
 const isATag = (tagName) => tagName === TagNames.A;
 const isButtonTag = (tagName) => tagName === TagNames.BUTTON;
+const countDuplicateElements = (list) => {
+  let counts = {};
+  list.forEach((element) => {
+    counts[element] = (counts[element] || 0) + 1;
+  });
+  return counts;
+};
 
-export {getRandomNumber, shuffleList, getRandomItem, getRandomDate, createElement, renderElement, removeElement, isATag, isButtonTag};
+export {getRandomNumber, shuffleList, getRandomItem, getRandomDate, createElement, renderElement, removeElement, isATag, isButtonTag, countDuplicateElements};

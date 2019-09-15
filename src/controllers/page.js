@@ -1,5 +1,5 @@
-import {GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, ListTitles, Sorting, Filters, Position} from "../utils/constants";
-import {renderElement, removeElement, isATag} from "../utils/util";
+import {GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, ListTitles, Sorting, Filters, Position, Screens} from "../utils/constants";
+import {renderElement, removeElement, isATag} from "../utils/utils";
 import FilmCardsController from "./film-cards";
 import Menu from "../components/menu";
 import Sort from "../components/sort";
@@ -9,9 +9,11 @@ import NoFilms from "../components/no-films";
 import ShowMoreButton from "../components/show-more-button";
 
 export default class PageController {
-  constructor(container, cards, onDataChange) {
+  constructor(container, cards, searchController, statisticsController, onDataChange) {
     this._container = container;
     this._cards = cards;
+    this._searchController = searchController;
+    this._statisticsController = statisticsController;
     this._onDataChangeMain = onDataChange;
 
     this._generalAmount = GENERAL_FILMS_AMOUNT;
@@ -107,6 +109,7 @@ export default class PageController {
 
   _onFilterLinkClick(evt) {
     evt.preventDefault();
+
     if (!isATag(evt.target.tagName)) {
       return;
     }
@@ -135,10 +138,24 @@ export default class PageController {
         this._filmCardsController.setFilmCards(this._processedCards.slice(0, this._generalAmount));
         break;
     }
+
+    switch (evt.target.dataset.screen) {
+      case Screens.ALL.TYPE:
+        this.show();
+        this._searchController.hide();
+        this._statisticsController.hide();
+        break;
+      case Screens.STATS.TYPE:
+        this.hide();
+        this._searchController.hide();
+        this._statisticsController.show(this._processedCards);
+        break;
+    }
   }
 
   _onSortLinkClick(evt) {
     evt.preventDefault();
+
     if (!isATag(evt.target.tagName)) {
       return;
     }

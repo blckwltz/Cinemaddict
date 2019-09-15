@@ -1,5 +1,5 @@
 import {MIN_SEARCH_STRING_LENGTH, ListTitles} from "../utils/constants";
-import {removeElement, renderElement} from "../utils/util";
+import {removeElement, renderElement} from "../utils/utils";
 import FilmCardsController from "./film-cards";
 import SearchResult from "../components/search-result";
 import SearchNoResult from "../components/search-no-result";

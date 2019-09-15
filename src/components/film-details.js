@@ -1,5 +1,5 @@
 import {Actions} from "../utils/constants";
-import {createElement, removeElement, renderElement} from "../utils/util";
+import {createElement, removeElement, renderElement} from "../utils/utils";
 import AbstractComponent from "./abstract-component";
 import UserRating from "./user-rating";
 
@@ -76,7 +76,7 @@ export default class FilmDetails extends AbstractComponent {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">${Math.ceil(this._duration / 60)}h ${this._duration % 60}m</td>
+              <td class="film-details__cell">${Math.floor(this._duration / 60)}h ${this._duration % 60}m</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>

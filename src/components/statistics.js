@@ -41,7 +41,7 @@ export default class Statistics extends AbstractComponent {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">${Math.ceil(this._cards.reduce((acc, card) => {
+        <p class="statistic__item-text">${Math.floor(this._cards.reduce((acc, card) => {
     if (card.isWatched) {
       acc = acc + card.duration;
     } return acc;
@@ -53,12 +53,12 @@ export default class Statistics extends AbstractComponent {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
-        <p class="statistic__item-text">Sci-Fi</p>
+        <p class="statistic__item-text"></p>
       </li>
     </ul>
   
     <div class="statistic__chart-wrap">
-      <canvas class="statistic__chart" width="1000"></canvas>
+      <canvas class="statistic__chart" width="1000" height="250"></canvas>
     </div>
     
   </section>`;

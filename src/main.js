@@ -1,10 +1,9 @@
-import {MAX_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH} from "./utils/constants";
-import {getRandomNumber, renderElement} from "./utils/util";
+import {MAX_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, Screens} from "./utils/constants";
+import {getRandomNumber, isATag, renderElement} from "./utils/utils";
 import {getFilmCard} from "./data";
 import PageController from "./controllers/page";
 import SearchController from "./controllers/search";
-import MenuController from "./controllers/menu";
-// import StatisticsController from "./controllers/statistics";
+import StatisticsController from "./controllers/statistics";
 import Search from "./components/search";
 import ProfileRating from "./components/profile-rating";
 
@@ -25,19 +24,20 @@ renderElement(headerElement, profileRating.getElement());
 statisticsElement.textContent = `${filmCards.length} movies inside`;
 
 const searchController = new SearchController(mainElement, search, filmCards, onDataChange);
-const pageController = new PageController(mainElement, filmCards, onDataChange);
-// const statisticsController = new StatisticsController(mainElement, filmCards, onDataChange);
-// const menuController = new MenuController(mainElement, filmCards, pageController, statisticsController, searchController, onDataChange);
+const statisticsController = new StatisticsController(mainElement, filmCards, onDataChange);
+const pageController = new PageController(mainElement, filmCards, searchController, statisticsController, onDataChange);
 
 searchController.init();
-// menuController.init();
 pageController.init();
-// statisticsController.init();
+statisticsController.init();
+
+// TODO add states for main page
 
 search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
   if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
     searchController.show();
     pageController.hide();
+    statisticsController.hide();
   } else {
     searchController.hide();
     pageController.show();

@@ -1,5 +1,5 @@
-import {MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, Description, UserRating, Rating} from "./utils/constants";
-import {getRandomNumber, getRandomItem, getRandomDate, shuffleList} from "./utils/util";
+import {MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, Description, UserRating, Duration} from "./utils/constants";
+import {getRandomNumber, getRandomItem, getRandomDate, shuffleList} from "./utils/utils";
 import moment from "moment";
 
 const strings = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus`.split(`. `);
@@ -42,7 +42,6 @@ const getRating = () => {
   const firstDigit = getRandomNumber(MAX_RATING);
   return firstDigit < MAX_RATING ? `${firstDigit}.${getRandomNumber(MAX_RATING)}` : `${firstDigit}.0`;
 };
-const getDuration = () => `${getRandomNumber(2)}h ${getRandomNumber(59, 1)}m`;
 const getCommentsAmount = () => getRandomNumber(MAX_COMMENTS_AMOUNT);
 const getComment = () => ({
   text: getDescription(false),
@@ -56,7 +55,7 @@ const getFilmCard = () => ({
   rating: getRating(),
   year: `${moment(getRandomDate(new Date(EARLIEST_RELEASE_DATE), new Date()))
     .format(`YYYY`)}`,
-  duration: getDuration(),
+  duration: getRandomNumber(Duration.MAX, Duration.MIN),
   genre: getRandomItem(genres),
   poster: getRandomItem(posters),
   description: getDescription(),

@@ -23,7 +23,7 @@ export default class FilmCard extends AbstractComponent {
           <p class="film-card__rating">${this._rating}</p>
           <p class="film-card__info">
             <span class="film-card__year">${this._year}</span>
-            <span class="film-card__duration">${this._duration}</span>
+            <span class="film-card__duration">${Math.floor(this._duration / 60)}h ${this._duration % 60}m</span>
             <span class="film-card__genre">${this._genre}</span>
           </p>
           <img src=${this._poster} alt="" class="film-card__poster">

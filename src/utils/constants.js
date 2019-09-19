@@ -6,6 +6,8 @@ const EARLIEST_RELEASE_DATE = `1929-01-01`;
 const GENERAL_FILMS_AMOUNT = 5;
 const CATEGORY_FILMS_AMOUNT = 2;
 const MIN_SEARCH_STRING_LENGTH = 3;
+const AUTHORIZATION = `Basic eo0w590ik29889a=${Math.random()}`;
+const END_POINT = `https://htmlacademy-es-9.appspot.com/cinemaddict`;
 
 const Description = {
   SENTENCES: {
@@ -55,19 +57,19 @@ const ListTitles = {
 const Sorting = {
   BY_DEFAULT: {
     TYPE: `default`,
-    FUNCTION: undefined,
+    METHOD: undefined,
   },
   BY_DATE: {
     TYPE: `date`,
-    FUNCTION: (a, b) => b.year - a.year,
+    METHOD: (a, b) => b.year - a.year,
   },
   BY_RATING: {
     TYPE: `rating`,
-    FUNCTION: (a, b) => b.rating - a.rating,
+    METHOD: (a, b) => b.rating - a.rating,
   },
   BY_COMMENTS: {
     TYPE: `comments`,
-    FUNCTION: (a, b) => b.commentsAmount - a.commentsAmount,
+    METHOD: (a, b) => b.commentsAmount - a.commentsAmount,
   },
 };
 const Actions = {
@@ -82,8 +84,8 @@ const Actions = {
   },
 };
 const Screens = {
-  ALL: {
-    TYPE: `all`,
+  FILMS: {
+    TYPE: `films`,
   },
   STATS: {
     TYPE: `stats`,
@@ -92,24 +94,31 @@ const Screens = {
 const Modes = {
   VIEW: `view`,
   SEARCH: `search`,
+  STATISTIC: `statistic`
 };
 const Filters = {
   ALL: {
     TYPE: `all`,
-    FUNCTION: (n) => n,
+    METHOD: (n) => n,
   },
   IN_WATCHLIST: {
     TYPE: `in watchlist`,
-    FUNCTION: (n) => n.inWatchlist,
+    METHOD: (n) => n.inWatchlist,
   },
   IS_WATCHED: {
     TYPE: `is watched`,
-    FUNCTION: (n) => n.isWatched,
+    METHOD: (n) => n.isWatched,
   },
   IS_FAVORITE: {
     TYPE: `is favorite`,
-    FUNCTION: (n) => n.isFavorite,
+    METHOD: (n) => n.isFavorite,
   },
 };
+const Method = {
+  GET: `GET`,
+  POST: `POST`,
+  PUT: `PUT`,
+  DELETE: `DELETE`,
+};
 
-export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, Description, UserRating, Rating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, Modes, Filters};
+export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, Description, UserRating, Rating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, Modes, Filters, Method};

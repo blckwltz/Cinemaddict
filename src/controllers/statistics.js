@@ -4,19 +4,20 @@ import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 export default class StatisticsController {
-  constructor(container, cards) {
+  constructor(container) {
     this._container = container;
-    this._cards = cards;
+    this._cards = [];
 
     this._statistics = new Statistics(this._cards);
   }
 
   show(cards) {
-    this._statistics.getElement().classList.remove(`visually-hidden`);
     if (cards !== this._cards) {
       this._renderStatistics(cards);
       this._renderCharts(cards);
     }
+
+    this._statistics.getElement().classList.remove(`visually-hidden`);
   }
 
   hide() {

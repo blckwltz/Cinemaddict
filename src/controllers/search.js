@@ -1,15 +1,15 @@
 import {MIN_SEARCH_STRING_LENGTH, ListTitles} from "../utils/constants";
-import {removeElement, renderElement} from "../utils/utils";
+import {debounce, removeElement, renderElement} from "../utils/utils";
 import FilmCardsController from "./film-cards";
 import SearchResult from "../components/search-result";
 import SearchNoResult from "../components/search-no-result";
 import FilmsList from "../components/films-list";
 
 export default class SearchController {
-  constructor(container, search, cards, onDataChange) {
+  constructor(container, search, onDataChange) {
     this._container = container;
     this._search = search;
-    this._cards = cards;
+    this._cards = [];
     this._onDataChangeMain = onDataChange;
 
     this._searchResult = new SearchResult();
@@ -18,7 +18,12 @@ export default class SearchController {
     this._filmCardsController = new FilmCardsController(null, this._onDataChange.bind(this));
   }
 
-  show() {
+  show(cards) {
+    if (this._cards !== cards) {
+      this._setFilmCards(cards);
+      this.init();
+    }
+
     this._searchResult.getElement().classList.remove(`visually-hidden`);
     this._noResult.getElement().classList.remove(`visually-hidden`);
     this._filmsList.getElement().classList.remove(`visually-hidden`);
@@ -35,7 +40,7 @@ export default class SearchController {
     this._search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
       if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
         const cards = this._cards.filter((card) => (card.title.includes(evt.target.value) || card.title.toLowerCase().includes(evt.target.value)));
-        this._showSearchResult(cards);
+        debounce(this._showSearchResult(cards), 500);
       }
     });
   }
@@ -61,8 +66,12 @@ export default class SearchController {
     }
   }
 
-  _onDataChange(cards) {
+  _setFilmCards(cards) {
     this._cards = cards;
-    this._onDataChangeMain(this._cards);
+    this.init();
+  }
+
+  _onDataChange(card) {
+    this._onDataChangeMain(card);
   }
 }

@@ -33,9 +33,13 @@ export default class FilmCardsController {
     this._subscriptions.forEach((subscription) => subscription());
   }
 
-  _onDataChange(newData, oldData) {
-    this._cards[this._cards.findIndex((card) => card === oldData)] = newData;
-    this.setFilmCards(this._cards);
-    this._onDataChangeMain(this._cards);
+  _onDataChange(id) {
+    this._onDataChangeMain(this._cards.reduce((acc, card) => {
+      if (card.id === id) {
+        acc = card;
+      }
+
+      return acc;
+    }, {}));
   }
 }

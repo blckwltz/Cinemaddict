@@ -1,5 +1,5 @@
 import {MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, Description, UserRating, Duration} from "./utils/constants";
-import {getRandomNumber, getRandomItem, getRandomDate, shuffleList} from "./utils/utils";
+import {getRandomNumber, getRandomItem, getRandomDate, shuffleList, trimString} from "./utils/utils";
 import moment from "moment";
 
 const strings = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus`.split(`. `);
@@ -20,7 +20,7 @@ const emojis = [
     source: `./images/emoji/sleeping.png`,
   },
   {
-    id: `gpuke`,
+    id: `puke`,
     value: `grinning`,
     source: `./images/emoji/puke.png`,
   },
@@ -31,12 +31,8 @@ const emojis = [
   }
 ];
 
-const getDescription = (short = true) => {
-  const description = shuffleList(strings).slice(0, getRandomNumber(Description.SENTENCES.MAX, Description.SENTENCES.MIN)).join(`. `);
-  if (short) {
-    return description.length < Description.LENGTH.MAX ? `${description}.` : `${description.slice(0, Description.LENGTH.TO_DISPLAY).trim()}…`;
-  }
-  return `${description}.`;
+const getDescription = () => {
+  return `${shuffleList(strings).slice(0, getRandomNumber(Description.SENTENCES.MAX, Description.SENTENCES.MIN)).join(`. `)}.`;
 };
 const getRating = () => {
   const firstDigit = getRandomNumber(MAX_RATING);
@@ -44,9 +40,10 @@ const getRating = () => {
 };
 const getCommentsAmount = () => getRandomNumber(MAX_COMMENTS_AMOUNT);
 const getComment = () => ({
-  text: getDescription(false),
+  text: trimString(getDescription()),
   author: getRandomItem(names),
-  date: `${getRandomNumber(10, 2)} days ago`,
+  date: `${moment(getRandomDate(new Date(EARLIEST_RELEASE_DATE), new Date()))
+    .fromNow()}`,
   emoji: getRandomItem(emojis),
 });
 
@@ -58,7 +55,7 @@ const getFilmCard = () => ({
   duration: getRandomNumber(Duration.MAX, Duration.MIN),
   genre: getRandomItem(genres),
   poster: getRandomItem(posters),
-  description: getDescription(),
+  description: trimString(getDescription()),
   get commentsAmount() {
     return this.comments.length;
   },
@@ -67,7 +64,9 @@ const getFilmCard = () => ({
   isFavorite: Boolean(getRandomNumber(1)),
   comments: [...new Array(getCommentsAmount())].map(getComment),
   userRating: null,
+  watchingDate: Date.now(),
   details: {
+    originalTitle: getRandomItem(titles),
     age: `${getRandomNumber(MAX_AGE)}+`,
     director: getRandomItem(names),
     writers: [...new Array(3)].map(() => getRandomItem(names)),
@@ -76,8 +75,7 @@ const getFilmCard = () => ({
       .format(`DD MMMM YYYY`)}`,
     country: getRandomItem(countries),
     genres: [...new Array(getRandomNumber(3))].map(() => getRandomItem(genres)),
-    description: getDescription(false),
-    emojis,
+    description: getDescription(),
   },
 });
 
@@ -93,4 +91,4 @@ const getUserTitle = (amount) => {
   return title;
 };
 
-export {getFilmCard, getUserTitle};
+export {emojis, getFilmCard, getUserTitle};

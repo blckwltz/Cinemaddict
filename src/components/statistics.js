@@ -58,7 +58,7 @@ export default class Statistics extends AbstractComponent {
     </ul>
   
     <div class="statistic__chart-wrap">
-      <canvas class="statistic__chart" width="1000" height="250"></canvas>
+      <canvas class="statistic__chart" width="1000"></canvas>
     </div>
     
   </section>`;

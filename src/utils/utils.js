@@ -1,4 +1,4 @@
-import {Position, TagNames} from "./constants";
+import {Description, Position, TagNames} from "./constants";
 
 const getRandomNumber = (max, min = 0) => {
   min = Math.ceil(min);
@@ -17,6 +17,9 @@ const getRandomItem = (list) => {
   return array[getRandomNumber(array.length - 1)];
 };
 const getRandomDate = (start, end) => new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+const trimString = (string) => {
+  return string.length < Description.LENGTH.MAX ? string : `${string.slice(0, Description.LENGTH.TO_DISPLAY).trim()}…`;
+};
 const createElement = (template) => {
   const containerElement = document.createElement(`div`);
   containerElement.innerHTML = template;
@@ -46,5 +49,24 @@ const countDuplicateElements = (list) => {
   });
   return counts;
 };
+const debounce = (callback, time) => {
+  let timeout;
 
-export {getRandomNumber, shuffleList, getRandomItem, getRandomDate, createElement, renderElement, removeElement, isATag, isButtonTag, countDuplicateElements};
+  return function (...args) {
+    const functionCall = () => callback.apply(this, args);
+    clearTimeout(timeout);
+    timeout = setTimeout(functionCall, time);
+  };
+};
+const checkStatus = (response) => {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  } else {
+    throw new Error(`${response.status}: ${response.statusText}`);
+  }
+};
+const toJSON = (response) => {
+  return response.json();
+};
+
+export {getRandomNumber, shuffleList, getRandomItem, getRandomDate, trimString, createElement, renderElement, removeElement, isATag, isButtonTag, countDuplicateElements, debounce, checkStatus, toJSON};

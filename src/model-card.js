@@ -64,7 +64,7 @@ export default class ModelCard {
         'personal_rating': card.userRating || 0,
         'watchlist': card.inWatchlist,
         'already_watched': card.isWatched,
-        'watching_date': moment(card.watchingDate).toISOString() || ``,
+        'watching_date': moment(card.watchingDate).toISOString(),
         'favorite': card.isFavorite,
       },
     };

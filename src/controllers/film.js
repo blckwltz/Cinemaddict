@@ -61,7 +61,6 @@ export default class FilmController {
               evt.target.blur();
               checkedInputElement.checked = false;
               removeElement(chosenEmoji);
-              this._data.comments.push(entry);
               this._onDataChange(this._data.id);
               renderCommentsForm();
             });

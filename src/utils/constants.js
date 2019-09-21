@@ -120,5 +120,10 @@ const Method = {
   PUT: `PUT`,
   DELETE: `DELETE`,
 };
+const ErrorClasses = {
+  INPUT: `input-error`,
+  RATING_FORM: `rating-form-error`,
+  RATING_INPUT: `rating-input-error`,
+};
 
-export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, Description, UserRating, Rating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, Modes, Filters, Method};
+export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, Description, UserRating, Rating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, Modes, Filters, Method, ErrorClasses};

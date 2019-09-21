@@ -1,11 +1,9 @@
-import {AUTHORIZATION, END_POINT, Actions} from "../utils/constants";
+import {Actions} from "../utils/constants";
 import {isButtonTag, removeElement, renderElement} from "../utils/utils";
+import CommentsController from "./comments";
 import FilmCard from "../components/film-card";
 import FilmDetails from "../components/film-details";
-import CommentsForm from "../components/comments-form";
-import API from "../api";
-import ModelComment from "../model-comment";
-import moment from "moment";
+import UserRatingController from "./user-rating";
 
 export default class FilmController {
   constructor(container, data, onDataChange, onChangeView) {
@@ -16,71 +14,32 @@ export default class FilmController {
 
     this._filmCard = new FilmCard(this._data);
     this._filmDetails = new FilmDetails(this._data);
-    this._api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
   }
 
   init() {
     const hideFilmDetails = () => {
-      const chosenRating = this._filmDetails.getElement().querySelector(`.film-details__user-rating-input:checked`);
-
-      if (chosenRating) {
-        this._data.userRating = chosenRating.value;
-        this._onDataChange(this._data.id);
-      }
-
       removeElement(this._filmDetails.getElement());
       this._filmDetails.removeElement();
     };
 
     const renderCommentsForm = () => {
       const commentsContainer = this._filmDetails.getElement().querySelector(`.form-details__bottom-container`);
-      this._api.getComments({id: this._data.id}).then((comments) => {
-        const commentsForm = new CommentsForm(comments);
-        commentsContainer.innerHTML = ``;
-        renderElement(commentsContainer, commentsForm.getElement());
-        const inputField = commentsForm.getElement().querySelector(`.film-details__comment-input`);
-        inputField.addEventListener(`keydown`, (evt) => {
-          if ((evt.key === `Enter` && evt.metaKey) || (evt.key === `Enter` && evt.ctrlKey)) {
-            const checkedInputElement = commentsForm.getElement().querySelector(`.film-details__emoji-item:checked`);
-            const chosenEmoji = commentsForm.getElement().querySelector(`.film-details__add-emoji-label img`);
+      const commentsController = new CommentsController(commentsContainer, this._data.id, onEscKeyDown, this._onDataChange.bind(this));
+      commentsController.init();
+    };
 
-            if (!evt.target.value || !checkedInputElement) {
-              return;
-            }
+    const userRatingFormController = new UserRatingController(this._filmDetails.getElement(), this._data, this._onDataChange.bind(this));
+    let ratingFormShown;
+    userRatingFormController.init();
 
-            const entry = {
-              text: evt.target.value,
-              date: moment(),
-              emoji: {
-                id: checkedInputElement.id.replace(`emoji-`, ``),
-              },
-            };
+    const showRatingForm = () => {
+      userRatingFormController.show(this._data);
+      ratingFormShown = true;
+    };
 
-            this._api.postComment({id: this._data.id, data: ModelComment.toRAW(entry)}).then(() => {
-              evt.target.value = ``;
-              evt.target.blur();
-              checkedInputElement.checked = false;
-              removeElement(chosenEmoji);
-              this._onDataChange(this._data.id);
-              renderCommentsForm();
-            });
-          }
-        });
-        inputField.addEventListener(`focus`, () => {
-          document.removeEventListener(`keydown`, onEscKeyDown);
-        });
-        inputField.addEventListener(`blur`, () => {
-          document.addEventListener(`keydown`, onEscKeyDown);
-        });
-        commentsForm.getElement().querySelectorAll(`.film-details__comment-delete`).forEach((item, index) => item.addEventListener(`click`, (evt) => {
-          evt.preventDefault();
-          this._api.deleteComment({id: comments[index].id}).then(() => {
-            this._data.comments = [...this._data.comments.slice(0, index), ...this._data.comments.slice(index + 1)];
-            this._onDataChange(this._data.id);
-            renderCommentsForm();
-          });
-        }));
-      });
+    const hideRatingForm = () => {
+      userRatingFormController.hide();
+      ratingFormShown = false;
     };
 
     const onEscKeyDown = (evt) => {
@@ -104,8 +63,10 @@ export default class FilmController {
         case Actions.MARK_AS_WATCHED.TYPE:
           this._data.isWatched = !this._data.isWatched;
 
-          if (this._data.userRating) {
-            this._data.userRating = null;
+          if (ratingFormShown) {
+            hideRatingForm();
+          } else {
+            showRatingForm();
           }
 
           this._onDataChange(this._data.id);
@@ -128,6 +89,10 @@ export default class FilmController {
       document.addEventListener(`keydown`, onEscKeyDown);
       this._filmDetails.getElement().querySelector(`.film-details__controls`).addEventListener(`click`, (evt) => onControlButtonClick(evt));
     };
+
+    if (this._data.isWatched) {
+      showRatingForm();
+    }
 
     this._filmCard.getElement().querySelectorAll(`.film-card__title, .film-card__poster, .film-card__comments`).forEach((element) => element.addEventListener(`click`, renderFilmDetails));
     this._filmCard.getElement().querySelector(`.film-card__controls`).addEventListener(`click`, (evt) => onControlButtonClick(evt));

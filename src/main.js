@@ -1,5 +1,5 @@
 import {MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT} from "./utils/constants";
-import {renderElement} from "./utils/utils";
+import {removeElement, renderElement} from "./utils/utils";
 import PageController from "./controllers/page";
 import SearchController from "./controllers/search";
 import StatisticsController from "./controllers/statistics";
@@ -41,6 +41,7 @@ renderElement(headerElement, search.getElement());
 
 const renderPage = ((cards) => {
   const profileRating = new ProfileRating(cards);
+  removeElement(headerElement.querySelector(`.profile`));
   renderElement(headerElement, profileRating.getElement());
   searchController.show(cards);
   menuController.show(cards);
@@ -49,7 +50,7 @@ const renderPage = ((cards) => {
 
   search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
     if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
-      searchController.show();
+      searchController.show(cards);
       pageController.hide();
       statisticsController.hide();
     } else {
@@ -68,10 +69,6 @@ api.getCards().then((cards) => renderPage(cards));
 
 // TODO
 //  1. add states for main page +-
-//  2. do something with user rating
-//  3. separate comments controller?
-//  4. finish statistics controller
-//  5. refactor controllers +-
-//  6. offline mode
-//  7. do something with profile rating update +-
-//  8. debounce for search +-
+//  2. finish statistics controller
+//  3. offline mode
+//  4. debounce for search +-

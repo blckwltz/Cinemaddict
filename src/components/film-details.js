@@ -1,16 +1,13 @@
 import {Actions} from "../utils/constants";
-import {removeElement, renderElement} from "../utils/utils";
 import AbstractComponent from "./abstract-component";
-import UserRating from "./user-rating";
 
 export default class FilmDetails extends AbstractComponent {
-  constructor({title, rating, duration, poster, commentsAmount, inWatchlist, isWatched, isFavorite, userRating, details: {originalTitle, age, director, writers, actors, releaseDate, country, genres, description, emojis}}) {
+  constructor({title, rating, duration, poster, inWatchlist, isWatched, isFavorite, userRating, details: {originalTitle, age, director, writers, actors, releaseDate, country, genres, description, emojis}}) {
     super();
     this._title = title;
     this._rating = rating;
     this._duration = duration;
     this._poster = poster;
-    this._commentsAmount = commentsAmount;
     this._inWatchlist = inWatchlist;
     this._isWatched = isWatched;
     this._isFavorite = isFavorite;
@@ -27,8 +24,6 @@ export default class FilmDetails extends AbstractComponent {
       _description: description,
       _emojis: emojis,
     };
-
-    this._subscribeOnEvents();
   }
 
   getTemplate() {
@@ -54,7 +49,7 @@ export default class FilmDetails extends AbstractComponent {
 
             <div class="film-details__rating">
               <p class="film-details__total-rating">${this._rating}</p>
-              <p class="film-details__user-rating">${this._userRating ? `Your rate ${this._userRating}` : ``}</p>
+              <p class="film-details__user-rating">${(this._userRating && this._isWatched) ? `Your rate ${this._userRating}` : ``}</p>
             </div>
           </div>
 
@@ -114,53 +109,5 @@ export default class FilmDetails extends AbstractComponent {
     <div class="form-details__bottom-container"></div>
   </form>
 </section>`;
-  }
-
-  _subscribeOnEvents() {
-    const userRating = new UserRating(this._title, this._poster);
-    const userRatingElement = this.getElement().querySelector(`.film-details__user-rating`);
-
-    const onRatingInputChange = (evt) => {
-      userRatingElement.textContent = `Your rate ${evt.target.value}`;
-    };
-    const onUndoButtonClick = () => {
-      userRatingElement.textContent = ``;
-      const chosenRating = this.getElement().querySelector(`.film-details__user-rating-input:checked`);
-
-      if (chosenRating) {
-        chosenRating.checked = false;
-      }
-    };
-    const renderUserRatingElement = () => {
-      renderElement(this.getElement().querySelector(`.form-details__middle-container`), userRating.getElement());
-      userRating.getElement().querySelectorAll(`.film-details__user-rating-input`).forEach((element) => {
-        element.addEventListener(`change`, (evt) => onRatingInputChange(evt));
-
-        if (element.value === this._userRating) {
-          element.checked = true;
-        }
-      });
-      userRating.getElement().querySelector(`.film-details__watched-reset`).addEventListener(`click`, () => onUndoButtonClick());
-    };
-
-    if (this.getElement().querySelector(`#watched`).checked) {
-      renderUserRatingElement();
-    }
-
-    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, () => {
-      if (this.getElement().contains(userRating.getElement())) {
-        const chosenRating = this.getElement().querySelector(`.film-details__user-rating-input:checked`);
-
-        if (chosenRating) {
-          chosenRating.checked = false;
-        }
-
-        userRatingElement.textContent = ``;
-        removeElement(userRating.getElement());
-        userRating.removeElement();
-      } else {
-        renderUserRatingElement();
-      }
-    });
   }
 }

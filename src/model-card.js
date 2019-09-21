@@ -16,7 +16,7 @@ export default class ModelCard {
     this.isWatched = data[`user_details`][`already_watched`];
     this.isFavorite = data[`user_details`][`favorite`];
     this.comments = data[`comments`];
-    this.userRating = data[`user_details`][`personal_rating`];
+    this.userRating = data[`user_details`][`already_watched`] ? data[`user_details`][`personal_rating`] : 0;
     this.watchingDate = data[`user_details`][`watching_date`];
     this.details = {
       originalTitle: data[`film_info`][`alternative_title`],
@@ -61,10 +61,10 @@ export default class ModelCard {
         'description': card.details.description,
       },
       'user_details': {
-        'personal_rating': card.userRating || 0,
+        'personal_rating': Number(card.userRating) || 0,
         'watchlist': card.inWatchlist,
         'already_watched': card.isWatched,
-        'watching_date': moment(card.watchingDate).toISOString(),
+        'watching_date': moment(card.watchingDate).toISOString() || moment().toISOString(),
         'favorite': card.isFavorite,
       },
     };

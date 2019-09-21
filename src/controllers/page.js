@@ -16,7 +16,7 @@ export default class PageController {
     this._generalAmount = GENERAL_FILMS_AMOUNT;
     this._categoryAmount = CATEGORY_FILMS_AMOUNT;
     this._activeSort = Sorting.BY_DEFAULT;
-    this._sortedCards = this._cards;
+    this._sortedCards = this._cards.slice();
     this._sort = new Sort();
     this._films = new Films();
     this._generalFilmsList = new FilmsList(false, ListTitles.GENERAL);
@@ -28,7 +28,7 @@ export default class PageController {
   }
 
   show(cards) {
-    if (cards !== this._cards) {
+    if (this._cards !== cards) {
       this._setFilmCards(cards);
     }
 
@@ -61,7 +61,7 @@ export default class PageController {
   }
 
   _renderCategoryFilmsLists() {
-    if (this._sortedCards.some((card) => parseInt(card.rating, 10))) {
+    if (this._sortedCards.some((card) => Number(card.rating))) {
       removeElement(this._topRatedFilmsList.getElement());
       this._topRatedFilmsList.removeElement();
       renderElement(this._films.getElement(), this._topRatedFilmsList.getElement());
@@ -71,7 +71,7 @@ export default class PageController {
       this._filmCardsController.setFilmCards(cardsByRating.slice(0, this._categoryAmount));
     }
 
-    if (this._sortedCards.some((card) => parseInt(card.commentsAmount, 10))) {
+    if (this._sortedCards.some((card) => Number(card.commentsAmount))) {
       removeElement(this._mostCommentedFilmsList.getElement());
       this._mostCommentedFilmsList.removeElement();
       renderElement(this._films.getElement(), this._mostCommentedFilmsList.getElement());
@@ -119,7 +119,7 @@ export default class PageController {
         break;
       case Sorting.BY_DEFAULT.TYPE:
         this._activeSort = Sorting.BY_DEFAULT;
-        this._setFilmCards(this._sortedCards);
+        this._setFilmCards(this._cards);
     }
   }
 
@@ -139,6 +139,7 @@ export default class PageController {
 
   _setFilmCards(cards) {
     const filmsListContainer = this._generalFilmsList.getElement().querySelector(`.films-list__container`);
+    this._cards = cards;
     this._sortedCards = cards.slice().sort(this._activeSort.METHOD);
     this._generalAmount = filmsListContainer.childElementCount >= GENERAL_FILMS_AMOUNT ? filmsListContainer.childElementCount : GENERAL_FILMS_AMOUNT;
     this._renderGeneralFilmsList();

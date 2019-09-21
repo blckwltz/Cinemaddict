@@ -16,7 +16,7 @@ export default class MenuController {
   }
 
   show(cards) {
-    if (cards !== this._cards) {
+    if (this._cards !== cards) {
       this._setFilmCards(cards);
     }
 

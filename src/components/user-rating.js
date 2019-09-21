@@ -1,7 +1,7 @@
 import AbstractComponent from "./abstract-component";
 
 export default class UserRating extends AbstractComponent {
-  constructor(title, poster) {
+  constructor({title, poster}) {
     super();
     this._title = title;
     this._poster = poster;

@@ -50,12 +50,13 @@ const countDuplicateElements = (list) => {
   return counts;
 };
 const debounce = (callback, time) => {
-  let timeout;
+  let timeoutID;
 
-  return function (...args) {
-    const functionCall = () => callback.apply(this, args);
-    clearTimeout(timeout);
-    timeout = setTimeout(functionCall, time);
+  return (...args) => {
+    if (timeoutID) {
+      clearTimeout(timeoutID);
+    }
+    timeoutID = setTimeout(callback(args), time);
   };
 };
 const checkStatus = (response) => {
@@ -68,5 +69,11 @@ const checkStatus = (response) => {
 const toJSON = (response) => {
   return response.json();
 };
+const isOnline = () => {
+  return window.navigator.onLine;
+};
+const objectToArray = (object) => {
+  return Object.keys(object).map((id) => object[id]);
+};
 
-export {getRandomNumber, shuffleList, getRandomItem, getRandomDate, trimString, createElement, renderElement, removeElement, isATag, isButtonTag, countDuplicateElements, debounce, checkStatus, toJSON};
+export {getRandomNumber, shuffleList, getRandomItem, getRandomDate, trimString, createElement, renderElement, removeElement, isATag, isButtonTag, countDuplicateElements, debounce, checkStatus, toJSON, isOnline, objectToArray};

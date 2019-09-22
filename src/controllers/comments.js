@@ -2,7 +2,7 @@ import {AUTHORIZATION, END_POINT, ErrorClasses} from "../utils/constants";
 import {removeElement, renderElement} from "../utils/utils";
 import CommentsForm from "../components/comments-form";
 import API from "../api";
-import ModelComment from "../model-comment";
+import ModelComment from "../models/model-comment";
 import moment from "moment";
 
 export default class CommentsController {

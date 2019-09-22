@@ -1,4 +1,4 @@
-import {trimString} from "./utils/utils";
+import {trimString} from "../utils/utils";
 import moment from "moment";
 
 export default class ModelCard {
@@ -8,7 +8,7 @@ export default class ModelCard {
     this.rating = data[`film_info`][`total_rating`];
     this.year = moment(data[`film_info`][`release`][`date`]).format(`YYYY`);
     this.duration = data[`film_info`][`runtime`];
-    this.genre = data[`film_info`][`genre`][0];
+    this.genre = data[`film_info`][`genre`][0] || `No genre`;
     this.poster = data[`film_info`][`poster`];
     this.description = trimString(data[`film_info`][`description`]);
     this.commentsAmount = data[`comments`].length;

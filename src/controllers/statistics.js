@@ -1,7 +1,9 @@
 import {countDuplicateElements, removeElement, renderElement} from "../utils/utils";
 import Statistics from "../components/statistics";
+import StatisticFilters from "../components/statistic-filters";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import {Filters} from "../utils/constants";
 
 export default class StatisticsController {
   constructor(container) {
@@ -9,32 +11,46 @@ export default class StatisticsController {
     this._cards = [];
 
     this._statistics = new Statistics(this._cards);
+    this._filters = new StatisticFilters(this._cards);
   }
 
   show(cards) {
     if (cards !== this._cards) {
+      this._renderFilters(cards);
       this._renderStatistics(cards);
       this._renderCharts(cards);
     }
 
+    this._filters.getElement().classList.remove(`visually-hidden`);
     this._statistics.getElement().classList.remove(`visually-hidden`);
   }
 
   hide() {
+    this._filters.getElement().classList.add(`visually-hidden`);
     this._statistics.getElement().classList.add(`visually-hidden`);
   }
 
   init() {
+    this._renderFilters(this._cards);
     this._renderStatistics(this._cards);
     this._renderCharts(this._cards);
     this.hide();
+  }
+
+  _renderFilters(cards) {
+    removeElement(this._filters.getElement());
+    this._filters.removeElement();
+    this._filters = new StatisticFilters(cards);
+    renderElement(this._container, this._filters.getElement());
+    const filterInputs = this._filters.getElement().querySelectorAll(`.statistic__filters-input`);
+    filterInputs.forEach((input) => input.addEventListener(`change`, (evt) => this._onFilterInputChange(evt, cards)));
   }
 
   _renderStatistics(cards) {
     removeElement(this._statistics.getElement());
     this._statistics.removeElement();
     this._statistics = new Statistics(cards);
-    renderElement(this._container, this._statistics.getElement());
+    renderElement(this._filters.getElement(), this._statistics.getElement());
   }
 
   _renderCharts(cards) {
@@ -47,11 +63,13 @@ export default class StatisticsController {
       return acc;
     }, []);
     const dataForChart = countDuplicateElements(watchedGenres);
-    const chart = new Chart(chartCtx, {
+    return new Chart(chartCtx, {
       plugins: [ChartDataLabels],
       type: `horizontalBar`,
       data: {
-        labels: Object.keys(dataForChart),
+        labels: Object.keys(dataForChart).sort((a, b) => {
+          return dataForChart[b] - dataForChart[a];
+        }),
         datasets: [{
           data: Object.values(dataForChart).sort((a, b) => b - a),
           backgroundColor: `#ffe800`,
@@ -94,5 +112,30 @@ export default class StatisticsController {
         },
       },
     });
+  }
+
+  _onFilterInputChange(evt, cards) {
+    switch (evt.target.dataset.filter) {
+      case `all`:
+        this._renderStatistics(cards);
+        this._renderCharts(cards);
+        break;
+      case `today`:
+        this._renderStatistics(cards.slice().filter(Filters.TODAY.METHOD));
+        this._renderCharts(cards.slice().filter(Filters.TODAY.METHOD));
+        break;
+      case `week`:
+        this._renderStatistics(cards.slice().filter(Filters.WEEK.METHOD));
+        this._renderCharts(cards.slice().filter(Filters.WEEK.METHOD));
+        break;
+      case `month`:
+        this._renderStatistics(cards.slice().filter(Filters.MONTH.METHOD));
+        this._renderCharts(cards.slice().filter(Filters.MONTH.METHOD));
+        break;
+      case `year`:
+        this._renderStatistics(cards.slice().filter(Filters.YEAR.METHOD));
+        this._renderCharts(cards.slice().filter(Filters.YEAR.METHOD));
+        break;
+    }
   }
 }

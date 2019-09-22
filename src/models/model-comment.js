@@ -1,4 +1,4 @@
-import {emojis} from "./data";
+import {emojis} from "../data";
 import moment from "moment";
 
 export default class ModelComment {

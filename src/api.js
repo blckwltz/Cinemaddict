@@ -1,7 +1,7 @@
 import {Method} from "./utils/constants";
 import {checkStatus, toJSON} from "./utils/utils";
-import ModelCard from "./model-card";
-import ModelComment from "./model-comment";
+import ModelCard from "./models/model-card";
+import ModelComment from "./models/model-comment";
 
 export default class API {
   constructor({endPoint, authorization}) {
@@ -13,6 +13,16 @@ export default class API {
     return this._load({url: `movies`})
       .then(toJSON)
       .then(ModelCard.parseCards);
+  }
+
+  syncCards({cards}) {
+    return this._load({
+      url: `movies/sync`,
+      method: Method.POST,
+      body: JSON.stringify(cards),
+      headers: new Headers({'Content-Type': `application/json`}),
+    })
+      .then(toJSON);
   }
 
   updateCard({id, data}) {

@@ -40,7 +40,7 @@ export default class SearchController {
     this._search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
       if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
         const cards = this._cards.filter((card) => (card.title.includes(evt.target.value) || card.title.toLowerCase().includes(evt.target.value)));
-        debounce(this._showSearchResult(cards), 500);
+        this._showSearchResult(cards);
       }
     });
   }

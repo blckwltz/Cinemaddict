@@ -44,6 +44,7 @@ export default class PageController {
   init() {
     renderElement(this._container, this._sort.getElement());
     this._sort.getElement().addEventListener(`click`, (evt) => this._onSortLinkClick(evt));
+    this._sort.getElement().classList.add(`visually-hidden`);
     renderElement(this._container, this._films.getElement());
   }
 

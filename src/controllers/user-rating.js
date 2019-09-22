@@ -2,7 +2,7 @@ import {AUTHORIZATION, END_POINT, ErrorClasses} from "../utils/constants";
 import {removeElement, renderElement} from "../utils/utils";
 import UserRating from "../components/user-rating";
 import API from "../api";
-import ModelCard from "../model-card";
+import ModelCard from "../models/model-card";
 
 export default class UserRatingController {
   constructor(container, card, onDataChange) {

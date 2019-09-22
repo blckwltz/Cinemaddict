@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const MAX_FILMS_AMOUNT = 50;
 const MAX_RATING = 9;
 const MAX_COMMENTS_AMOUNT = 10;
@@ -8,6 +10,8 @@ const CATEGORY_FILMS_AMOUNT = 2;
 const MIN_SEARCH_STRING_LENGTH = 3;
 const AUTHORIZATION = `Basic eo0w590ik29889a=${Math.random()}`;
 const END_POINT = `https://htmlacademy-es-9.appspot.com/cinemaddict`;
+const CARDS_STORE_KEY = `Cinemaddict Film Cards`;
+const CACHE_NAME = `Cinemaddict`;
 
 const Description = {
   SENTENCES: {
@@ -113,6 +117,22 @@ const Filters = {
     TYPE: `is favorite`,
     METHOD: (n) => n.isFavorite,
   },
+  TODAY: {
+    TYPE: `today`,
+    METHOD: (n) => moment(n.watchingDate).isoWeekday() === moment().isoWeekday(),
+  },
+  WEEK: {
+    TYPE: `week`,
+    METHOD: (n) => moment(n.watchingDate).isoWeek() === moment().isoWeek(),
+  },
+  MONTH: {
+    TYPE: `month`,
+    METHOD: (n) => moment(n.watchingDate).month() === moment().month(),
+  },
+  YEAR: {
+    TYPE: `year`,
+    METHOD: (n) => moment(n.watchingDate).year() === moment().year(),
+  },
 };
 const Method = {
   GET: `GET`,
@@ -126,4 +146,4 @@ const ErrorClasses = {
   RATING_INPUT: `rating-input-error`,
 };
 
-export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, Description, UserRating, Rating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, Modes, Filters, Method, ErrorClasses};
+export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, CARDS_STORE_KEY, CACHE_NAME, Description, UserRating, Rating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, Modes, Filters, Method, ErrorClasses};

@@ -74,7 +74,6 @@ const renderPage = ((cards) => {
       statisticsController.show(cards);
     } else {
       pageController.show(cards);
-      // comment
     }
   };
 

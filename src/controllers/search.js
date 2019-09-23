@@ -1,5 +1,5 @@
 import {MIN_SEARCH_STRING_LENGTH, ListTitles} from "../utils/constants";
-import {debounce, removeElement, renderElement} from "../utils/utils";
+import {removeElement, renderElement} from "../utils/utils";
 import FilmCardsController from "./film-cards";
 import SearchResult from "../components/search-result";
 import SearchNoResult from "../components/search-no-result";
@@ -37,7 +37,8 @@ export default class SearchController {
 
   init() {
     this.hide();
-    this._search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
+    const searchInput = this._search.getElement().querySelector(`input`);
+    searchInput.addEventListener(`keyup`, (evt) => {
       if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
         const cards = this._cards.filter((card) => (card.title.includes(evt.target.value) || card.title.toLowerCase().includes(evt.target.value)));
         this._showSearchResult(cards);

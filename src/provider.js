@@ -12,7 +12,7 @@ export default class Provider {
     if (this._isOnline) {
       return this._api.getCards()
         .then((cards) => {
-          cards.map((card) => this._store.setItem({key: card.id, item: card}));
+          cards.map((card) => this._store.setItem({key: card.id, item: ModelCard.toRAW(card)}));
           return cards;
         });
     } else {
@@ -31,7 +31,7 @@ export default class Provider {
     if (this._isOnline) {
       return this._api.updateCard({id, data})
         .then((card) => {
-          this._store.setItem({key: card.id, item: card});
+          this._store.setItem({key: card.id, item: ModelCard.toRAW(card)});
           return card;
         });
     } else {

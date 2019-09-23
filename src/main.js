@@ -1,23 +1,27 @@
-import {MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, CARDS_STORE_KEY} from "./utils/constants";
-import {debounce, removeElement, renderElement, isOnline} from "./utils/utils";
+import {AUTHORIZATION, END_POINT, CARDS_STORE_KEY} from "./utils/constants";
+import {removeElement, renderElement, isOnline} from "./utils/utils";
 import MenuController from "./controllers/menu";
 import PageController from "./controllers/page";
 import SearchController from "./controllers/search";
 import StatisticsController from "./controllers/statistics";
 import Search from "./components/search";
 import ProfileRating from "./components/profile-rating";
+import Loader from "./components/loader";
+import StatisticsText from "./components/statistics-text";
 import ModelCard from "./models/model-card";
 import API from "./api";
 import Provider from "./provider";
 import Store from "./store";
+import debounce from "lodash.debounce";
 
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
 const store = new Store({key: CARDS_STORE_KEY, storage: localStorage});
 const provider = new Provider({api, store, isOnline});
 const headerElement = document.querySelector(`.header`);
 const mainElement = document.querySelector(`.main`);
-const statisticsElement = document.querySelector(`.footer__statistics p`);
+const footerElement = document.querySelector(`.footer`);
 const search = new Search();
+const loader = new Loader();
 
 const onDataChange = (update) => {
   provider.updateCard({
@@ -43,46 +47,30 @@ pageController.init();
 menuController.init();
 
 renderElement(headerElement, search.getElement());
+renderElement(mainElement, loader.getElement());
 
 const renderPage = ((cards) => {
-  removeElement(document.querySelector(`.loading-text`));
+  removeElement(loader.getElement());
+  loader.removeElement();
 
   const profileRating = new ProfileRating(cards);
   removeElement(headerElement.querySelector(`.profile`));
   renderElement(headerElement, profileRating.getElement());
+
+  const statisticsText = new StatisticsText(cards);
+  removeElement(footerElement.querySelector(`.footer__statistics`));
+  renderElement(footerElement, statisticsText.getElement());
   searchController.show(cards);
   menuController.show(cards);
   pageController.show(cards);
-  statisticsElement.classList.remove(`visually-hidden`);
-  statisticsElement.textContent = `${cards.length} movies inside`;
 
-  const showSearchResults = (evt) => {
-    if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
-      searchController.show(cards);
-      menuController.hide();
-      pageController.hide();
-      statisticsController.hide();
-    } else {
-      hideSearchResults();
-    }
-  };
-
-  const hideSearchResults = () => {
-    menuController.show(cards);
-    searchController.hide();
-    if (document.querySelector(`[data-screen="stats"].main-navigation__item--active`)) {
-      statisticsController.show(cards);
-    } else {
-      pageController.show(cards);
-    }
-  };
-
-  search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
-    debounce(showSearchResults(evt), 1000);
-  });
-
-  search.getElement().querySelector(`.search__reset`).addEventListener(`click`, () => {
-    debounce(hideSearchResults(), 1000);
+  const searchInputElement = search.getElement().querySelector(`input`);
+  const searchResetElement = search.getElement().querySelector(`.search__reset`);
+  searchInputElement.addEventListener(`keyup`, debounce((evt) => {
+    menuController.showSearchResults(evt);
+  }, 300));
+  searchResetElement.addEventListener(`click`, () => {
+    menuController.hideSearchResults();
   });
 });
 
@@ -97,7 +85,4 @@ window.addEventListener(`online`, () => {
 provider.getCards().then((cards) => renderPage(cards));
 
 // TODO
-//  1. add states for main page +-
-//  2. offline mode (almost done)
-//  3. add loader +-
-//  4.debounce
+//  1. offline mode (almost done)

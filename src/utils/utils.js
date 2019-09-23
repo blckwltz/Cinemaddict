@@ -49,16 +49,6 @@ const countDuplicateElements = (list) => {
   });
   return counts;
 };
-const debounce = (callback, time) => {
-  let timeoutID;
-
-  return (...args) => {
-    if (timeoutID) {
-      clearTimeout(timeoutID);
-    }
-    timeoutID = setTimeout(callback(args), time);
-  };
-};
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
@@ -76,4 +66,4 @@ const objectToArray = (object) => {
   return Object.keys(object).map((id) => object[id]);
 };
 
-export {getRandomNumber, shuffleList, getRandomItem, getRandomDate, trimString, createElement, renderElement, removeElement, isATag, isButtonTag, countDuplicateElements, debounce, checkStatus, toJSON, isOnline, objectToArray};
+export {getRandomNumber, shuffleList, getRandomItem, getRandomDate, trimString, createElement, renderElement, removeElement, isATag, isButtonTag, countDuplicateElements, checkStatus, toJSON, isOnline, objectToArray};

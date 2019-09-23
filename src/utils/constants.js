@@ -95,9 +95,8 @@ const Screens = {
     TYPE: `stats`,
   },
 };
-const Modes = {
+const States = {
   VIEW: `view`,
-  SEARCH: `search`,
   STATISTIC: `statistic`
 };
 const Filters = {
@@ -146,4 +145,4 @@ const ErrorClasses = {
   RATING_INPUT: `rating-input-error`,
 };
 
-export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, CARDS_STORE_KEY, CACHE_NAME, Description, UserRating, Rating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, Modes, Filters, Method, ErrorClasses};
+export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, CARDS_STORE_KEY, CACHE_NAME, Description, UserRating, Rating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, States, Filters, Method, ErrorClasses};

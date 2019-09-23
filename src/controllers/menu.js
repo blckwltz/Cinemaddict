@@ -1,4 +1,4 @@
-import {Filters, Position, Screens} from "../utils/constants";
+import {Filters, MIN_SEARCH_STRING_LENGTH, Position, Screens, States} from "../utils/constants";
 import {isATag, removeElement, renderElement} from "../utils/utils";
 import Menu from "../components/menu";
 
@@ -13,6 +13,7 @@ export default class MenuController {
 
     this._menu = new Menu([]);
     this._activeFilter = Filters.ALL;
+    this._state = States.VIEW;
   }
 
   show(cards) {
@@ -29,6 +30,27 @@ export default class MenuController {
 
   init() {
     this._renderMenu();
+  }
+
+  showSearchResults(evt) {
+    if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
+      this._searchController.show(this._cards);
+      this.hide();
+      this._pageController.hide();
+      this._statisticsController.hide();
+    } else {
+      this.hideSearchResults();
+    }
+  }
+
+  hideSearchResults() {
+    this.show(this._cards);
+    this._searchController.hide();
+    if (this._state === States.VIEW) {
+      this._pageController.show(this._cards);
+    } else {
+      this._statisticsController.show(this._cards);
+    }
   }
 
   _renderMenu() {
@@ -76,11 +98,13 @@ export default class MenuController {
       case Screens.FILMS.TYPE:
         this._searchController.hide();
         this._statisticsController.hide();
+        this._state = States.VIEW;
         break;
       case Screens.STATS.TYPE:
         this._pageController.hide();
         this._searchController.hide();
         this._statisticsController.show(this._cards);
+        this._state = States.STATISTIC;
         break;
     }
   }

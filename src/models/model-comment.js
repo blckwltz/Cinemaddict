@@ -1,4 +1,4 @@
-import {emojis} from "../data";
+import {Emojis} from "../utils/constants";
 
 export default class ModelComment {
   constructor(data) {
@@ -8,7 +8,7 @@ export default class ModelComment {
     this.date = data[`date`];
     this.emoji = {
       id: data[`emotion`],
-      source: emojis.reduce((acc, emoji) => {
+      source: Emojis.reduce((acc, emoji) => {
         if (emoji.id === data[`emotion`]) {
           acc = emoji.source;
         }

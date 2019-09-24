@@ -83,9 +83,6 @@ export default class UserRatingController {
       id: this._card.id,
       data: ModelCard.toRAW(this._card),
     })
-      // .then(() => {
-      //   this._onDataChange(this._card.id);
-      // })
       .catch(() => {
         this._resetUserRating();
         const ratingInputLabel = this._userRatingForm.getElement().querySelector(`[for="${evt.target.id}"]`);

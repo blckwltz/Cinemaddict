@@ -1,18 +1,35 @@
 import moment from "moment";
 
-const MAX_FILMS_AMOUNT = 50;
-const MAX_RATING = 9;
-const MAX_COMMENTS_AMOUNT = 10;
-const MAX_AGE = 21;
-const EARLIEST_RELEASE_DATE = `1929-01-01`;
 const GENERAL_FILMS_AMOUNT = 5;
 const CATEGORY_FILMS_AMOUNT = 2;
 const MIN_SEARCH_STRING_LENGTH = 3;
-const AUTHORIZATION = `Basic eo0w590ik29889a=${Math.random()}`;
+const AUTHORIZATION = `Basic eo0w590ik29889a=488939`;
 const END_POINT = `https://htmlacademy-es-9.appspot.com/cinemaddict`;
 const CARDS_STORE_KEY = `Cinemaddict Film Cards`;
 const COMMENTS_STORE_KEY = `Cinemaddict Comments`;
 
+const Emojis = [
+  {
+    id: `smile`,
+    value: `sleeping`,
+    source: `./images/emoji/smile.png`,
+  },
+  {
+    id: `sleeping`,
+    value: `neutral-face`,
+    source: `./images/emoji/sleeping.png`,
+  },
+  {
+    id: `puke`,
+    value: `grinning`,
+    source: `./images/emoji/puke.png`,
+  },
+  {
+    id: `angry`,
+    value: `grinning`,
+    source: `./images/emoji/angry.png`
+  }
+];
 const Description = {
   SENTENCES: {
     MIN: 1,
@@ -142,4 +159,4 @@ const ErrorClasses = {
   RATING_INPUT: `rating-input-error`,
 };
 
-export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, CARDS_STORE_KEY, COMMENTS_STORE_KEY, Description, UserRating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, States, Filters, Method, ErrorClasses};
+export {GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, CARDS_STORE_KEY, COMMENTS_STORE_KEY, Emojis, Description, UserRating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, States, Filters, Method, ErrorClasses};

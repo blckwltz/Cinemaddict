@@ -15,6 +15,7 @@ export default class MenuController {
     this._menu = new Menu([]);
     this._activeFilter = Filters.ALL;
     this._state = States.VIEW;
+    this._previousState = ``;
   }
 
   show(cards) {
@@ -35,11 +36,15 @@ export default class MenuController {
     const searchResetElement = this._search.getElement().querySelector(`.search__reset`);
     searchInputElement.addEventListener(`keyup`, debounce((evt) => {
       this._showSearchResults(evt);
-      this._state = States.SEARCH;
     }, 300));
     searchResetElement.addEventListener(`click`, () => {
+      this._state = this._previousState;
       this._hideSearchResults();
     });
+  }
+
+  getState() {
+    return this._state;
   }
 
   _renderMenu() {
@@ -100,7 +105,9 @@ export default class MenuController {
 
   _showSearchResults(evt) {
     if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
-      this._searchController.show(this._cards);
+      this._previousState = this._state;
+      this._state = States.SEARCH;
+      this._searchController.show();
       this.hide();
       this._pageController.hide();
       this._statisticsController.hide();
@@ -112,10 +119,15 @@ export default class MenuController {
   _hideSearchResults() {
     this.show(this._cards);
     this._searchController.hide();
-    if (this._state === States.VIEW) {
-      this._pageController.show(this._cards);
-    } else {
-      this._statisticsController.show(this._cards);
+    this._state = this._previousState;
+
+    switch (this._state) {
+      case States.VIEW:
+        this._pageController.show(this._cards);
+        break;
+      case States.STATISTIC:
+        this._statisticsController.show(this._cards);
+        break;
     }
   }
 

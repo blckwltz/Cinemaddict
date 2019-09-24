@@ -10,6 +10,7 @@ export default class SearchController {
     this._container = container;
     this._search = search;
     this._cards = [];
+    this._filteredCards = [];
     this._onDataChangeMain = onDataChange;
 
     this._searchResult = new SearchResult();
@@ -18,12 +19,7 @@ export default class SearchController {
     this._filmCardsController = new FilmCardsController(null, this._onDataChange.bind(this));
   }
 
-  show(cards) {
-    if (this._cards !== cards) {
-      this._setFilmCards(cards);
-      this.init();
-    }
-
+  show() {
     this._searchResult.getElement().classList.remove(`visually-hidden`);
     this._noResult.getElement().classList.remove(`visually-hidden`);
     this._filmsList.getElement().classList.remove(`visually-hidden`);
@@ -35,15 +31,19 @@ export default class SearchController {
     this._filmsList.getElement().classList.add(`visually-hidden`);
   }
 
-  init() {
-    this.hide();
+  init(cards) {
+    this._setFilmCards(cards);
     const searchInput = this._search.getElement().querySelector(`input`);
     searchInput.addEventListener(`keyup`, (evt) => {
       if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
-        const cards = this._cards.filter((card) => (card.title.includes(evt.target.value) || card.title.toLowerCase().includes(evt.target.value)));
-        this._showSearchResult(cards);
+        this._filterCards(evt.target.value);
+        this._showSearchResult(this._filteredCards);
       }
     });
+  }
+
+  _filterCards(query) {
+    this._filteredCards = this._cards.filter((card) => (card.title.includes(query) || card.title.toLowerCase().includes(query)));
   }
 
   _showSearchResult(cards) {
@@ -58,7 +58,8 @@ export default class SearchController {
       this._searchResult = new SearchResult(cards.length);
       renderElement(this._container, this._searchResult.getElement());
       renderElement(this._container, this._filmsList.getElement());
-      this._filmCardsController = new FilmCardsController(this._filmsList.getElement().querySelector(`.films-list__container`), this._onDataChange.bind(this));
+      const filmsListContainer = this._filmsList.getElement().querySelector(`.films-list__container`);
+      this._filmCardsController = new FilmCardsController(filmsListContainer, this._onDataChange.bind(this));
       this._filmCardsController.setFilmCards(cards);
     } else {
       removeElement(this._filmsList.getElement());
@@ -69,10 +70,10 @@ export default class SearchController {
 
   _setFilmCards(cards) {
     this._cards = cards;
-    this.init();
   }
 
   _onDataChange(card) {
     this._onDataChangeMain(card);
+    this._showSearchResult(this._filteredCards);
   }
 }

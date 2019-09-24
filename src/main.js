@@ -1,4 +1,4 @@
-import {AUTHORIZATION, END_POINT, CARDS_STORE_KEY} from "./utils/constants";
+import {AUTHORIZATION, END_POINT, CARDS_STORE_KEY, States} from "./utils/constants";
 import {removeElement, renderElement, isOnline} from "./utils/utils";
 import MenuController from "./controllers/menu";
 import PageController from "./controllers/page";
@@ -40,7 +40,6 @@ const pageController = new PageController(mainElement, onDataChange);
 const statisticsController = new StatisticsController(mainElement, onDataChange);
 const menuController = new MenuController(mainElement, search, searchController, pageController, statisticsController, onDataChange);
 
-searchController.init();
 statisticsController.init();
 pageController.init();
 menuController.init();
@@ -59,9 +58,14 @@ const renderPage = ((cards) => {
   const statisticsText = new StatisticsText(cards);
   removeElement(footerElement.querySelector(`.footer__statistics`));
   renderElement(footerElement, statisticsText.getElement());
-  searchController.show(cards);
-  menuController.show(cards);
-  pageController.show(cards);
+  searchController.init(cards);
+
+  if (menuController.getState() === States.SEARCH) {
+    searchController.show();
+  } else {
+    pageController.show(cards);
+    menuController.show(cards);
+  }
 });
 
 window.addEventListener(`offline`, () => {
@@ -78,4 +82,5 @@ window.addEventListener(`online`, () => {
 provider.getCards().then((cards) => renderPage(cards));
 
 // TODO
-//  1. offline mode (almost done)
+//  1. fix filters
+//  2. fix data change for search

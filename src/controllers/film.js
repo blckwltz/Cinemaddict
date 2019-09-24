@@ -30,8 +30,8 @@ export default class FilmController {
     };
 
     const userRatingFormController = new UserRatingController(this._filmDetails.getElement(), this._data, this._onDataChange.bind(this));
-    let ratingFormShown;
     userRatingFormController.init();
+    let ratingFormShown;
 
     const showRatingForm = () => {
       userRatingFormController.show(this._data);

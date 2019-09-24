@@ -12,7 +12,6 @@ import ModelCard from "./models/model-card";
 import API from "./api";
 import Provider from "./provider";
 import Store from "./store";
-import debounce from "lodash.debounce";
 
 const api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
 const store = new Store({key: CARDS_STORE_KEY, storage: localStorage});
@@ -39,7 +38,7 @@ const onDataChange = (update) => {
 const searchController = new SearchController(mainElement, search, onDataChange);
 const pageController = new PageController(mainElement, onDataChange);
 const statisticsController = new StatisticsController(mainElement, onDataChange);
-const menuController = new MenuController(mainElement, searchController, pageController, statisticsController, onDataChange);
+const menuController = new MenuController(mainElement, search, searchController, pageController, statisticsController, onDataChange);
 
 searchController.init();
 statisticsController.init();
@@ -63,15 +62,6 @@ const renderPage = ((cards) => {
   searchController.show(cards);
   menuController.show(cards);
   pageController.show(cards);
-
-  const searchInputElement = search.getElement().querySelector(`input`);
-  const searchResetElement = search.getElement().querySelector(`.search__reset`);
-  searchInputElement.addEventListener(`keyup`, debounce((evt) => {
-    menuController.showSearchResults(evt);
-  }, 300));
-  searchResetElement.addEventListener(`click`, () => {
-    menuController.hideSearchResults();
-  });
 });
 
 window.addEventListener(`offline`, () => {
@@ -79,7 +69,10 @@ window.addEventListener(`offline`, () => {
 });
 window.addEventListener(`online`, () => {
   document.title = document.title.split(` [OFFLINE]`)[0];
-  provider.syncCards();
+  provider.syncCards()
+    .then((cards) => {
+      renderPage(cards);
+    });
 });
 
 provider.getCards().then((cards) => renderPage(cards));

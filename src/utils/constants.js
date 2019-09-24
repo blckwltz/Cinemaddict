@@ -11,7 +11,7 @@ const MIN_SEARCH_STRING_LENGTH = 3;
 const AUTHORIZATION = `Basic eo0w590ik29889a=${Math.random()}`;
 const END_POINT = `https://htmlacademy-es-9.appspot.com/cinemaddict`;
 const CARDS_STORE_KEY = `Cinemaddict Film Cards`;
-const CACHE_NAME = `Cinemaddict`;
+const COMMENTS_STORE_KEY = `Cinemaddict Comments`;
 
 const Description = {
   SENTENCES: {
@@ -36,10 +36,6 @@ const UserRating = {
     SECOND: `Fan`,
     THIRD: `Movie Buff`,
   },
-};
-const Rating = {
-  MIN: 1,
-  MAX: 9,
 };
 const Duration = {
   MIN: 20,
@@ -97,6 +93,7 @@ const Screens = {
 };
 const States = {
   VIEW: `view`,
+  SEARCH: `search`,
   STATISTIC: `statistic`
 };
 const Filters = {
@@ -145,4 +142,4 @@ const ErrorClasses = {
   RATING_INPUT: `rating-input-error`,
 };
 
-export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, CARDS_STORE_KEY, CACHE_NAME, Description, UserRating, Rating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, States, Filters, Method, ErrorClasses};
+export {MAX_FILMS_AMOUNT, MAX_RATING, MAX_COMMENTS_AMOUNT, MAX_AGE, EARLIEST_RELEASE_DATE, GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, CARDS_STORE_KEY, COMMENTS_STORE_KEY, Description, UserRating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, States, Filters, Method, ErrorClasses};

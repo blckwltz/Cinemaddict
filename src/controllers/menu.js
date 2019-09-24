@@ -1,15 +1,16 @@
 import {Filters, MIN_SEARCH_STRING_LENGTH, Position, Screens, States} from "../utils/constants";
 import {isATag, removeElement, renderElement} from "../utils/utils";
 import Menu from "../components/menu";
+import debounce from "lodash.debounce";
 
 export default class MenuController {
-  constructor(container, searchController, pageController, statisticsController, onDataChange) {
+  constructor(container, search, searchController, pageController, statisticsController) {
     this._container = container;
+    this._search = search;
     this._cards = [];
     this._searchController = searchController;
     this._pageController = pageController;
     this._statisticsController = statisticsController;
-    this._onDataChangeMain = onDataChange;
 
     this._menu = new Menu([]);
     this._activeFilter = Filters.ALL;
@@ -30,27 +31,15 @@ export default class MenuController {
 
   init() {
     this._renderMenu();
-  }
-
-  showSearchResults(evt) {
-    if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
-      this._searchController.show(this._cards);
-      this.hide();
-      this._pageController.hide();
-      this._statisticsController.hide();
-    } else {
-      this.hideSearchResults();
-    }
-  }
-
-  hideSearchResults() {
-    this.show(this._cards);
-    this._searchController.hide();
-    if (this._state === States.VIEW) {
-      this._pageController.show(this._cards);
-    } else {
-      this._statisticsController.show(this._cards);
-    }
+    const searchInputElement = this._search.getElement().querySelector(`input`);
+    const searchResetElement = this._search.getElement().querySelector(`.search__reset`);
+    searchInputElement.addEventListener(`keyup`, debounce((evt) => {
+      this._showSearchResults(evt);
+      this._state = States.SEARCH;
+    }, 300));
+    searchResetElement.addEventListener(`click`, () => {
+      this._hideSearchResults();
+    });
   }
 
   _renderMenu() {
@@ -109,13 +98,29 @@ export default class MenuController {
     }
   }
 
+  _showSearchResults(evt) {
+    if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
+      this._searchController.show(this._cards);
+      this.hide();
+      this._pageController.hide();
+      this._statisticsController.hide();
+    } else {
+      this._hideSearchResults();
+    }
+  }
+
+  _hideSearchResults() {
+    this.show(this._cards);
+    this._searchController.hide();
+    if (this._state === States.VIEW) {
+      this._pageController.show(this._cards);
+    } else {
+      this._statisticsController.show(this._cards);
+    }
+  }
+
   _setFilmCards(cards) {
     this._cards = cards;
     this._renderMenu();
-  }
-
-  _onDataChange(card) {
-    this._onDataChangeMain(card);
-    this._setFilmCards(this._cards);
   }
 }

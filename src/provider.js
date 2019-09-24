@@ -1,5 +1,6 @@
 import {objectToArray} from "./utils/utils";
 import ModelCard from "./models/model-card";
+import ModelComment from "./models/model-comment";
 
 export default class Provider {
   constructor({api, store, isOnline}) {
@@ -9,7 +10,7 @@ export default class Provider {
   }
 
   getCards() {
-    if (this._isOnline) {
+    if (this._isOnline()) {
       return this._api.getCards()
         .then((cards) => {
           cards.map((card) => this._store.setItem({key: card.id, item: ModelCard.toRAW(card)}));
@@ -28,7 +29,7 @@ export default class Provider {
   }
 
   updateCard({id, data}) {
-    if (this._isOnline) {
+    if (this._isOnline()) {
       return this._api.updateCard({id, data})
         .then((card) => {
           this._store.setItem({key: card.id, item: ModelCard.toRAW(card)});
@@ -38,6 +39,23 @@ export default class Provider {
       const card = data;
       this._store.setItem({key: card.id, item: card});
       return Promise.resolve(ModelCard.parseCard(card));
+    }
+  }
+
+  getComments({id}) {
+    if (this._isOnline()) {
+      return this._api.getComments({id})
+        .then((comments) => {
+          this._store.setItem({key: id, item: comments.map((comment) => ModelComment.toRAW(comment))});
+          return comments;
+        });
+    } else {
+      const rawCommentsMap = this._store.getAll();
+      const rawComments = objectToArray(rawCommentsMap);
+      const comments = rawComments.map((rawComment) => {
+        ModelComment.parseComments(rawComment);
+      });
+      return Promise.resolve(comments);
     }
   }
 }

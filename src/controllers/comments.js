@@ -1,7 +1,9 @@
-import {AUTHORIZATION, END_POINT, ErrorClasses} from "../utils/constants";
-import {removeElement, renderElement} from "../utils/utils";
+import {AUTHORIZATION, COMMENTS_STORE_KEY, END_POINT, ErrorClasses} from "../utils/constants";
+import {removeElement, renderElement, isOnline} from "../utils/utils";
 import CommentsForm from "../components/comments-form";
 import API from "../api";
+import Store from "../store";
+import Provider from "../provider";
 import ModelComment from "../models/model-comment";
 import moment from "moment";
 
@@ -14,6 +16,8 @@ export default class CommentsController {
 
     this._commentsForm = new CommentsForm([]);
     this._api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
+    this._store = new Store({key: COMMENTS_STORE_KEY, storage: localStorage});
+    this._provider = new Provider({api: this._api, store: this._store, isOnline});
   }
 
   init() {
@@ -23,22 +27,29 @@ export default class CommentsController {
   _renderCommentsForm() {
     removeElement(this._commentsForm.getElement());
     this._commentsForm.removeElement();
-    this._api.getComments({id: this._id}).then((comments) => {
+    this._provider.getComments({id: this._id}).then((comments) => {
       this._commentsForm = new CommentsForm(comments);
       renderElement(this._container, this._commentsForm.getElement());
       const inputField = this._commentsForm.getElement().querySelector(`.film-details__comment-input`);
-      inputField.addEventListener(`keydown`, (evt) => this._onEnterKeydown(evt));
-      inputField.addEventListener(`focus`, () => {
-        document.removeEventListener(`keydown`, this._callback);
-      });
-      inputField.addEventListener(`blur`, () => {
-        document.addEventListener(`keydown`, this._callback);
-      });
       const deleteButtons = this._commentsForm.getElement().querySelectorAll(`.film-details__comment-delete`);
-      deleteButtons.forEach((button, index) => button.addEventListener(`click`, (evt) => {
-        evt.preventDefault();
-        this._onDeleteButtonClick(button, comments, index);
-      }));
+      if (!isOnline()) {
+        inputField.disabled = true;
+        deleteButtons.forEach((button) => {
+          button.disabled = true;
+        });
+      } else {
+        inputField.addEventListener(`keydown`, (evt) => this._onEnterKeydown(evt));
+        inputField.addEventListener(`focus`, () => {
+          document.removeEventListener(`keydown`, this._callback);
+        });
+        inputField.addEventListener(`blur`, () => {
+          document.addEventListener(`keydown`, this._callback);
+        });
+        deleteButtons.forEach((button, index) => button.addEventListener(`click`, (evt) => {
+          evt.preventDefault();
+          this._onDeleteButtonClick(button, comments, index);
+        }));
+      }
     });
   }
 

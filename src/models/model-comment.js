@@ -1,12 +1,11 @@
 import {emojis} from "../data";
-import moment from "moment";
 
 export default class ModelComment {
   constructor(data) {
     this.id = data[`id`];
     this.text = data[`comment`];
     this.author = data[`author`];
-    this.date = moment(data[`date`]).fromNow();
+    this.date = data[`date`];
     this.emoji = {
       id: data[`emotion`],
       source: emojis.reduce((acc, emoji) => {

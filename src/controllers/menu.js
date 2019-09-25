@@ -38,7 +38,6 @@ export default class MenuController {
       this._showSearchResults(evt);
     }, 300));
     searchResetElement.addEventListener(`click`, () => {
-      this._state = this._previousState;
       this._hideSearchResults();
     });
   }
@@ -105,7 +104,9 @@ export default class MenuController {
 
   _showSearchResults(evt) {
     if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
-      this._previousState = this._state;
+      if (this._state !== States.SEARCH) {
+        this._previousState = this._state;
+      }
       this._state = States.SEARCH;
       this._searchController.show();
       this.hide();

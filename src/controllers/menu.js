@@ -7,11 +7,11 @@ export default class MenuController {
   constructor(container, search, searchController, pageController, statisticsController) {
     this._container = container;
     this._search = search;
-    this._cards = [];
     this._searchController = searchController;
     this._pageController = pageController;
     this._statisticsController = statisticsController;
 
+    this._cards = [];
     this._menu = new Menu([]);
     this._activeFilter = Filters.ALL;
     this._state = States.VIEW;
@@ -75,15 +75,15 @@ export default class MenuController {
         break;
       case Filters.IN_WATCHLIST.TYPE:
         this._activeFilter = Filters.IN_WATCHLIST;
-        this._pageController.show(this._cards.slice().filter(Filters.IN_WATCHLIST.METHOD));
+        this._pageController.show(this._cards.slice().filter(Filters.IN_WATCHLIST.METHOD), false);
         break;
       case Filters.IS_WATCHED.TYPE:
         this._activeFilter = Filters.IS_WATCHED;
-        this._pageController.show(this._cards.slice().filter(Filters.IS_WATCHED.METHOD));
+        this._pageController.show(this._cards.slice().filter(Filters.IS_WATCHED.METHOD), false);
         break;
       case Filters.IS_FAVORITE.TYPE:
         this._activeFilter = Filters.IS_FAVORITE;
-        this._pageController.show(this._cards.slice().filter(Filters.IS_FAVORITE.METHOD));
+        this._pageController.show(this._cards.slice().filter(Filters.IS_FAVORITE.METHOD), false);
         break;
     }
 
@@ -107,8 +107,9 @@ export default class MenuController {
       if (this._state !== States.SEARCH) {
         this._previousState = this._state;
       }
+
       this._state = States.SEARCH;
-      this._searchController.show();
+      this._searchController.show(this._cards);
       this.hide();
       this._pageController.hide();
       this._statisticsController.hide();
@@ -135,5 +136,6 @@ export default class MenuController {
   _setFilmCards(cards) {
     this._cards = cards;
     this._renderMenu();
+    this._pageController.show(this._cards.slice().filter(this._activeFilter.METHOD), false);
   }
 }

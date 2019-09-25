@@ -12,7 +12,7 @@ export default class CommentsController {
     this._container = container;
     this._id = id;
     this._callback = callback;
-    this._onDataChange = onDataChange;
+    this._onDataChangeMain = onDataChange;
 
     this._commentsForm = new CommentsForm([]);
     this._api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
@@ -106,5 +106,9 @@ export default class CommentsController {
         button.disabled = false;
         button.textContent = `Delete`;
       });
+  }
+
+  _onDataChange(card) {
+    this._onDataChangeMain(card);
   }
 }

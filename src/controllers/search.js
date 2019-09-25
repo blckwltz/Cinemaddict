@@ -9,17 +9,18 @@ export default class SearchController {
   constructor(container, search, onDataChange) {
     this._container = container;
     this._search = search;
-    this._cards = [];
-    this._filteredCards = [];
     this._onDataChangeMain = onDataChange;
 
+    this._cards = [];
+    this._filteredCards = [];
     this._searchResult = new SearchResult();
     this._noResult = new SearchNoResult();
     this._filmsList = new FilmsList(false, ListTitles.GENERAL);
     this._filmCardsController = new FilmCardsController(null, this._onDataChange.bind(this));
   }
 
-  show() {
+  show(cards) {
+    this._setFilmCards(cards);
     this._searchResult.getElement().classList.remove(`visually-hidden`);
     this._noResult.getElement().classList.remove(`visually-hidden`);
     this._filmsList.getElement().classList.remove(`visually-hidden`);
@@ -31,8 +32,7 @@ export default class SearchController {
     this._filmsList.getElement().classList.add(`visually-hidden`);
   }
 
-  init(cards) {
-    this._setFilmCards(cards);
+  init() {
     const searchInput = this._search.getElement().querySelector(`input`);
     searchInput.addEventListener(`keyup`, (evt) => {
       if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
@@ -43,7 +43,7 @@ export default class SearchController {
   }
 
   _filterCards(query) {
-    this._filteredCards = this._cards.filter((card) => (card.title.includes(query) || card.title.toLowerCase().includes(query)));
+    this._filteredCards = this._cards.slice().filter((card) => (card.title.includes(query) || card.title.toLowerCase().includes(query)));
   }
 
   _showSearchResult(cards) {
@@ -74,6 +74,8 @@ export default class SearchController {
 
   _onDataChange(card) {
     this._onDataChangeMain(card);
+    const searchInput = this._search.getElement().querySelector(`input`);
+    this._filterCards(searchInput.value);
     this._showSearchResult(this._filteredCards);
   }
 }

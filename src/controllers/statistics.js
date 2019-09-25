@@ -8,8 +8,8 @@ import {Filters} from "../utils/constants";
 export default class StatisticsController {
   constructor(container) {
     this._container = container;
-    this._cards = [];
 
+    this._cards = [];
     this._statistics = new Statistics(this._cards);
     this._filters = new StatisticFilters(this._cards);
   }

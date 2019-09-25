@@ -12,11 +12,9 @@ export default class SearchController {
     this._onDataChangeMain = onDataChange;
 
     this._cards = [];
-    this._filteredCards = [];
     this._searchResult = new SearchResult();
     this._noResult = new SearchNoResult();
     this._filmsList = new FilmsList(false, ListTitles.GENERAL);
-    this._filmCardsController = new FilmCardsController(null, this._onDataChange.bind(this));
   }
 
   show(cards) {
@@ -36,14 +34,13 @@ export default class SearchController {
     const searchInput = this._search.getElement().querySelector(`input`);
     searchInput.addEventListener(`keyup`, (evt) => {
       if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
-        this._filterCards(evt.target.value);
-        this._showSearchResult(this._filteredCards);
+        this._showSearchResult(this._filterCards(this._cards, evt.target.value));
       }
     });
   }
 
-  _filterCards(query) {
-    this._filteredCards = this._cards.slice().filter((card) => (card.title.includes(query) || card.title.toLowerCase().includes(query)));
+  _filterCards(cards, query) {
+    return cards.slice().filter((card) => (card.title.includes(query) || card.title.toLowerCase().includes(query)));
   }
 
   _showSearchResult(cards) {
@@ -59,8 +56,8 @@ export default class SearchController {
       renderElement(this._container, this._searchResult.getElement());
       renderElement(this._container, this._filmsList.getElement());
       const filmsListContainer = this._filmsList.getElement().querySelector(`.films-list__container`);
-      this._filmCardsController = new FilmCardsController(filmsListContainer, this._onDataChange.bind(this));
-      this._filmCardsController.setFilmCards(cards);
+      const filmCardsController = new FilmCardsController(filmsListContainer, this._onDataChange.bind(this));
+      filmCardsController.setFilmCards(cards);
     } else {
       removeElement(this._filmsList.getElement());
       this._filmsList.removeElement();
@@ -70,12 +67,11 @@ export default class SearchController {
 
   _setFilmCards(cards) {
     this._cards = cards;
+    const searchInput = this._search.getElement().querySelector(`input`);
+    this._showSearchResult(this._filterCards(this._cards, searchInput.value));
   }
 
   _onDataChange(card) {
     this._onDataChangeMain(card);
-    const searchInput = this._search.getElement().querySelector(`input`);
-    this._filterCards(searchInput.value);
-    this._showSearchResult(this._filteredCards);
   }
 }

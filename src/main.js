@@ -35,14 +35,14 @@ const onDataChange = (update) => {
     });
 };
 
-const searchController = new SearchController(mainElement, search, onDataChange);
 const pageController = new PageController(mainElement, onDataChange);
+const searchController = new SearchController(mainElement, search, onDataChange);
 const statisticsController = new StatisticsController(mainElement, onDataChange);
 const menuController = new MenuController(mainElement, search, searchController, pageController, statisticsController, onDataChange);
 
+pageController.init();
 searchController.init();
 statisticsController.init();
-pageController.init();
 menuController.init();
 
 renderElement(headerElement, search.getElement());
@@ -59,8 +59,8 @@ const renderPage = ((cards) => {
   const statisticsText = new StatisticsText(cards);
   removeElement(footerElement.querySelector(`.footer__statistics`));
   renderElement(footerElement, statisticsText.getElement());
-  searchController.show(cards);
   pageController.show(cards);
+  searchController.show(cards);
   menuController.show(cards);
 
   if (menuController.getState() === States.SEARCH) {
@@ -74,13 +74,7 @@ window.addEventListener(`offline`, () => {
 });
 window.addEventListener(`online`, () => {
   document.title = document.title.split(` [OFFLINE]`)[0];
-  provider.syncCards()
-    .then((cards) => {
-      renderPage(cards);
-    });
+  provider.syncCards();
 });
 
 provider.getCards().then((cards) => renderPage(cards));
-
-// TODO
-//  1. fix data change for search

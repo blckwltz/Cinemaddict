@@ -1,4 +1,4 @@
-import {getUserTitle} from "../data";
+import {getUserTitle} from "../utils/utils";
 import AbstractComponent from "./abstract-component";
 
 export default class ProfileRating extends AbstractComponent {

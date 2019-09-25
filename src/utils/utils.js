@@ -1,22 +1,5 @@
-import {Description, Position, TagNames} from "./constants";
+import {Description, Position, TagNames, UserRating} from "./constants";
 
-const getRandomNumber = (max, min = 0) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-const shuffleList = (list) => {
-  for (let i = 0; i < list.length; i += 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [list[i], list[j]] = [list[j], list[i]];
-  }
-  return list;
-};
-const getRandomItem = (list) => {
-  const array = Array.isArray(list) ? list : [...list];
-  return array[getRandomNumber(array.length - 1)];
-};
-const getRandomDate = (start, end) => new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
 const trimString = (string) => {
   return string.length < Description.LENGTH.MAX ? string : `${string.slice(0, Description.LENGTH.TO_DISPLAY).trim()}…`;
 };
@@ -40,6 +23,17 @@ const removeElement = (element) => {
     element.remove();
   }
 };
+const getUserTitle = (amount) => {
+  let title = ``;
+  if (amount >= UserRating.MILESTONES.FIRST && amount <= UserRating.MILESTONES.SECOND) {
+    title = UserRating.TITLES.FIRST;
+  } else if (amount >= UserRating.MILESTONES.THIRD && amount <= UserRating.MILESTONES.FOURTH) {
+    title = UserRating.TITLES.SECOND;
+  } else if (amount > UserRating.MILESTONES.FIFTH) {
+    title = UserRating.TITLES.THIRD;
+  }
+  return title;
+};
 const isATag = (tagName) => tagName === TagNames.A;
 const isButtonTag = (tagName) => tagName === TagNames.BUTTON;
 const countDuplicateElements = (list) => {
@@ -48,16 +42,6 @@ const countDuplicateElements = (list) => {
     counts[element] = (counts[element] || 0) + 1;
   });
   return counts;
-};
-const debounce = (callback, time) => {
-  let timeoutID;
-
-  return (...args) => {
-    if (timeoutID) {
-      clearTimeout(timeoutID);
-    }
-    timeoutID = setTimeout(callback(args), time);
-  };
 };
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
@@ -76,4 +60,4 @@ const objectToArray = (object) => {
   return Object.keys(object).map((id) => object[id]);
 };
 
-export {getRandomNumber, shuffleList, getRandomItem, getRandomDate, trimString, createElement, renderElement, removeElement, isATag, isButtonTag, countDuplicateElements, debounce, checkStatus, toJSON, isOnline, objectToArray};
+export {trimString, createElement, renderElement, removeElement, getUserTitle, isATag, isButtonTag, countDuplicateElements, checkStatus, toJSON, isOnline, objectToArray};

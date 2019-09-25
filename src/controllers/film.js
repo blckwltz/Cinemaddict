@@ -4,6 +4,7 @@ import CommentsController from "./comments";
 import FilmCard from "../components/film-card";
 import FilmDetails from "../components/film-details";
 import UserRatingController from "./user-rating";
+import moment from "moment";
 
 export default class FilmController {
   constructor(container, data, onDataChange, onChangeView) {
@@ -29,8 +30,8 @@ export default class FilmController {
     };
 
     const userRatingFormController = new UserRatingController(this._filmDetails.getElement(), this._data, this._onDataChange.bind(this));
-    let ratingFormShown;
     userRatingFormController.init();
+    let ratingFormShown;
 
     const showRatingForm = () => {
       userRatingFormController.show(this._data);
@@ -62,6 +63,7 @@ export default class FilmController {
           break;
         case Actions.MARK_AS_WATCHED.TYPE:
           this._data.isWatched = !this._data.isWatched;
+          this._data.watchingDate = this._data.watchingDate ? null : moment().toISOString();
 
           if (ratingFormShown) {
             hideRatingForm();

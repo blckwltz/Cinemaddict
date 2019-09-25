@@ -7,8 +7,6 @@ export default class FilmCardsController {
 
     this._cards = [];
     this._subscriptions = [];
-    this._onChangeView = this._onChangeView.bind(this);
-    this._onDataChange = this._onDataChange.bind(this);
   }
 
   setFilmCards(cards) {
@@ -24,7 +22,7 @@ export default class FilmCardsController {
   }
 
   _renderFilmCard(card) {
-    const filmController = new FilmController(this._container, card, this._onDataChange, this._onChangeView);
+    const filmController = new FilmController(this._container, card, this._onDataChange.bind(this), this._onChangeView.bind(this));
     filmController.init();
     this._subscriptions.push(filmController.setDefaultView.bind(filmController));
   }
@@ -38,7 +36,6 @@ export default class FilmCardsController {
       if (card.id === id) {
         acc = card;
       }
-
       return acc;
     }, {}));
   }

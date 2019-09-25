@@ -1,7 +1,9 @@
-import {AUTHORIZATION, END_POINT, ErrorClasses} from "../utils/constants";
-import {removeElement, renderElement} from "../utils/utils";
+import {AUTHORIZATION, CARDS_STORE_KEY, END_POINT, ErrorClasses} from "../utils/constants";
+import {isOnline, removeElement, renderElement} from "../utils/utils";
 import UserRating from "../components/user-rating";
 import API from "../api";
+import Store from "../store";
+import Provider from "../provider";
 import ModelCard from "../models/model-card";
 
 export default class UserRatingController {
@@ -13,6 +15,8 @@ export default class UserRatingController {
     this._userRatingForm = new UserRating(this._card);
     this._userRatingElement = this._container.querySelector(`.film-details__user-rating`);
     this._api = new API({endPoint: END_POINT, authorization: AUTHORIZATION});
+    this._store = new Store({key: CARDS_STORE_KEY, storage: localStorage});
+    this._provider = new Provider({api: this._api, store: this._store, isOnline});
   }
 
   show(card) {
@@ -75,7 +79,7 @@ export default class UserRatingController {
     }
 
     this._card.userRating = Number(evt.target.value);
-    this._api.updateCard({
+    this._provider.updateCard({
       id: this._card.id,
       data: ModelCard.toRAW(this._card),
     })

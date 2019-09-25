@@ -1,18 +1,21 @@
-import {Filters, Position, Screens} from "../utils/constants";
+import {Filters, MIN_SEARCH_STRING_LENGTH, Position, Screens, States} from "../utils/constants";
 import {isATag, removeElement, renderElement} from "../utils/utils";
 import Menu from "../components/menu";
+import debounce from "lodash.debounce";
 
 export default class MenuController {
-  constructor(container, searchController, pageController, statisticsController, onDataChange) {
+  constructor(container, search, searchController, pageController, statisticsController) {
     this._container = container;
-    this._cards = [];
+    this._search = search;
     this._searchController = searchController;
     this._pageController = pageController;
     this._statisticsController = statisticsController;
-    this._onDataChangeMain = onDataChange;
 
+    this._cards = [];
     this._menu = new Menu([]);
     this._activeFilter = Filters.ALL;
+    this._state = States.VIEW;
+    this._previousState = ``;
   }
 
   show(cards) {
@@ -29,6 +32,18 @@ export default class MenuController {
 
   init() {
     this._renderMenu();
+    const searchInputElement = this._search.getElement().querySelector(`input`);
+    const searchResetElement = this._search.getElement().querySelector(`.search__reset`);
+    searchInputElement.addEventListener(`keyup`, debounce((evt) => {
+      this._showSearchResults(evt);
+    }, 300));
+    searchResetElement.addEventListener(`click`, () => {
+      this._hideSearchResults();
+    });
+  }
+
+  getState() {
+    return this._state;
   }
 
   _renderMenu() {
@@ -60,15 +75,15 @@ export default class MenuController {
         break;
       case Filters.IN_WATCHLIST.TYPE:
         this._activeFilter = Filters.IN_WATCHLIST;
-        this._pageController.show(this._cards.slice().filter(Filters.IN_WATCHLIST.METHOD));
+        this._pageController.show(this._cards.slice().filter(Filters.IN_WATCHLIST.METHOD), false);
         break;
       case Filters.IS_WATCHED.TYPE:
         this._activeFilter = Filters.IS_WATCHED;
-        this._pageController.show(this._cards.slice().filter(Filters.IS_WATCHED.METHOD));
+        this._pageController.show(this._cards.slice().filter(Filters.IS_WATCHED.METHOD), false);
         break;
       case Filters.IS_FAVORITE.TYPE:
         this._activeFilter = Filters.IS_FAVORITE;
-        this._pageController.show(this._cards.slice().filter(Filters.IS_FAVORITE.METHOD));
+        this._pageController.show(this._cards.slice().filter(Filters.IS_FAVORITE.METHOD), false);
         break;
     }
 
@@ -76,10 +91,43 @@ export default class MenuController {
       case Screens.FILMS.TYPE:
         this._searchController.hide();
         this._statisticsController.hide();
+        this._state = States.VIEW;
         break;
       case Screens.STATS.TYPE:
         this._pageController.hide();
         this._searchController.hide();
+        this._statisticsController.show(this._cards);
+        this._state = States.STATISTIC;
+        break;
+    }
+  }
+
+  _showSearchResults(evt) {
+    if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
+      if (this._state !== States.SEARCH) {
+        this._previousState = this._state;
+      }
+
+      this._state = States.SEARCH;
+      this._searchController.show(this._cards);
+      this.hide();
+      this._pageController.hide();
+      this._statisticsController.hide();
+    } else {
+      this._hideSearchResults();
+    }
+  }
+
+  _hideSearchResults() {
+    this.show(this._cards);
+    this._searchController.hide();
+    this._state = this._previousState;
+
+    switch (this._state) {
+      case States.VIEW:
+        this._pageController.show(this._cards);
+        break;
+      case States.STATISTIC:
         this._statisticsController.show(this._cards);
         break;
     }
@@ -88,10 +136,6 @@ export default class MenuController {
   _setFilmCards(cards) {
     this._cards = cards;
     this._renderMenu();
-  }
-
-  _onDataChange(card) {
-    this._onDataChangeMain(card);
-    this._setFilmCards(this._cards);
+    this._pageController.show(this._cards.slice().filter(this._activeFilter.METHOD), false);
   }
 }

@@ -1,5 +1,5 @@
 import {MIN_SEARCH_STRING_LENGTH, ListTitles} from "../utils/constants";
-import {debounce, removeElement, renderElement} from "../utils/utils";
+import {removeElement, renderElement} from "../utils/utils";
 import FilmCardsController from "./film-cards";
 import SearchResult from "../components/search-result";
 import SearchNoResult from "../components/search-no-result";
@@ -9,21 +9,16 @@ export default class SearchController {
   constructor(container, search, onDataChange) {
     this._container = container;
     this._search = search;
-    this._cards = [];
     this._onDataChangeMain = onDataChange;
 
+    this._cards = [];
     this._searchResult = new SearchResult();
     this._noResult = new SearchNoResult();
     this._filmsList = new FilmsList(false, ListTitles.GENERAL);
-    this._filmCardsController = new FilmCardsController(null, this._onDataChange.bind(this));
   }
 
   show(cards) {
-    if (this._cards !== cards) {
-      this._setFilmCards(cards);
-      this.init();
-    }
-
+    this._setFilmCards(cards);
     this._searchResult.getElement().classList.remove(`visually-hidden`);
     this._noResult.getElement().classList.remove(`visually-hidden`);
     this._filmsList.getElement().classList.remove(`visually-hidden`);
@@ -36,13 +31,16 @@ export default class SearchController {
   }
 
   init() {
-    this.hide();
-    this._search.getElement().querySelector(`input`).addEventListener(`keyup`, (evt) => {
+    const searchInput = this._search.getElement().querySelector(`input`);
+    searchInput.addEventListener(`keyup`, (evt) => {
       if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
-        const cards = this._cards.filter((card) => (card.title.includes(evt.target.value) || card.title.toLowerCase().includes(evt.target.value)));
-        this._showSearchResult(cards);
+        this._showSearchResult(this._filterCards(this._cards, evt.target.value));
       }
     });
+  }
+
+  _filterCards(cards, query) {
+    return cards.slice().filter((card) => (card.title.includes(query) || card.title.toLowerCase().includes(query)));
   }
 
   _showSearchResult(cards) {
@@ -57,8 +55,9 @@ export default class SearchController {
       this._searchResult = new SearchResult(cards.length);
       renderElement(this._container, this._searchResult.getElement());
       renderElement(this._container, this._filmsList.getElement());
-      this._filmCardsController = new FilmCardsController(this._filmsList.getElement().querySelector(`.films-list__container`), this._onDataChange.bind(this));
-      this._filmCardsController.setFilmCards(cards);
+      const filmsListContainer = this._filmsList.getElement().querySelector(`.films-list__container`);
+      const filmCardsController = new FilmCardsController(filmsListContainer, this._onDataChange.bind(this));
+      filmCardsController.setFilmCards(cards);
     } else {
       removeElement(this._filmsList.getElement());
       this._filmsList.removeElement();
@@ -68,7 +67,8 @@ export default class SearchController {
 
   _setFilmCards(cards) {
     this._cards = cards;
-    this.init();
+    const searchInput = this._search.getElement().querySelector(`input`);
+    this._showSearchResult(this._filterCards(this._cards, searchInput.value));
   }
 
   _onDataChange(card) {

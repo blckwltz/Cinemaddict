@@ -1,6 +1,7 @@
-import {emojis} from "../data";
+import {Emojis} from "../utils/constants";
 import AbstractComponent from "./abstract-component";
 import {createElement} from "../utils/utils";
+import moment from "moment";
 
 export default class CommentsForm extends AbstractComponent {
   constructor(comments) {
@@ -23,7 +24,7 @@ export default class CommentsForm extends AbstractComponent {
               <p class="film-details__comment-text">${comment.text}</p>
               <p class="film-details__comment-info">
                 <span class="film-details__comment-author">${comment.author}</span>
-                <span class="film-details__comment-day">${comment.date}</span>
+                <span class="film-details__comment-day">${moment(comment.date).fromNow()}</span>
                 <button class="film-details__comment-delete">Delete</button>
               </p>
             </div>
@@ -38,7 +39,7 @@ export default class CommentsForm extends AbstractComponent {
           </label>
           
           <div class="film-details__emoji-list">
-          ${emojis.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="${emoji.id}" value="${emoji.value}">
+          ${Emojis.map((emoji) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="${emoji.id}" value="${emoji.value}">
         <label class="film-details__emoji-label" for="${emoji.id}">
         <img src="${emoji.source}" width="30" height="30" alt="emoji">
         </label>`).join(``)}

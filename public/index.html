@@ -20,7 +20,6 @@
 </header>
 
 <main class="main">
-  <div class="loading-text no-result">Loading…</div>
   <!-- Меню -->
 
   <!-- Сортировка -->
@@ -31,19 +30,16 @@
 
 <footer class="footer">
   <section class="footer__logo logo logo--smaller">Cinemaddict</section>
-  <section class="footer__statistics">
-    <p class="visually-hidden">130 291 movies inside</p>
-  </section>
 </footer>
 <script src="./bundle.js"></script>
 <script>
-  navigator.serviceWorker.register('./sw.js')
-    .then((reg) => {
-      console.log(`Registration succeeded. Scope is ${reg.scope}`);
-    })
-    .catch((error) => {
-      console.log(`Registration failed with ${error}`);
-    });
+  // navigator.serviceWorker.register('./sw.js')
+  //   .then((reg) => {
+  //     console.log(`Registration succeeded. Scope is ${reg.scope}`);
+  //   })
+  //   .catch((error) => {
+  //     console.log(`Registration failed with ${error}`);
+  //   });
 </script>
 </body>
 </html>

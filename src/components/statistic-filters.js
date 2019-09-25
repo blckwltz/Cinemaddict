@@ -1,5 +1,5 @@
 import {Filters} from "../utils/constants";
-import {getUserTitle} from "../data";
+import {getUserTitle} from "../utils/utils";
 import AbstractComponent from "./abstract-component";
 
 export default class StatisticFilters extends AbstractComponent {

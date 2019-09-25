@@ -22,7 +22,8 @@ export default class API {
       body: JSON.stringify(cards),
       headers: new Headers({'Content-Type': `application/json`}),
     })
-      .then(toJSON);
+      .then(toJSON)
+      .then(ModelCard.parseCards);
   }
 
   updateCard({id, data}) {
@@ -32,7 +33,8 @@ export default class API {
       body: JSON.stringify(data),
       headers: new Headers({'Content-Type': `application/json`}),
     })
-      .then(toJSON);
+      .then(toJSON)
+      .then(ModelCard.parseCard);
   }
 
   getComments({id}) {

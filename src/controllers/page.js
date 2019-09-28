@@ -97,6 +97,21 @@ export default class PageController {
     }
   }
 
+  _setFilmCards(cards, withCategories = true) {
+    this._cards = cards;
+    this._sortedCards = cards.slice().sort(this._activeSort.METHOD);
+    this._renderGeneralFilmsList();
+    this._renderShowMoreButton();
+
+    if (withCategories) {
+      this._renderCategoryFilmsLists();
+    }
+  }
+
+  _onDataChange(card) {
+    this._onDataChangeMain(card);
+  }
+
   _onSortLinkClick(evt) {
     evt.preventDefault();
 
@@ -136,20 +151,5 @@ export default class PageController {
       removeElement(this._showMoreButton.getElement());
       this._showMoreButton.removeElement();
     }
-  }
-
-  _setFilmCards(cards, withCategories = true) {
-    this._cards = cards;
-    this._sortedCards = cards.slice().sort(this._activeSort.METHOD);
-    this._renderGeneralFilmsList();
-    this._renderShowMoreButton();
-
-    if (withCategories) {
-      this._renderCategoryFilmsLists();
-    }
-  }
-
-  _onDataChange(card) {
-    this._onDataChangeMain(card);
   }
 }

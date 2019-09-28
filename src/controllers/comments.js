@@ -53,6 +53,10 @@ export default class CommentsController {
     });
   }
 
+  _onDataChange(card) {
+    this._onDataChangeMain(card);
+  }
+
   _onEnterKeydown(evt) {
     if ((evt.key === `Enter` && evt.metaKey) || (evt.key === `Enter` && evt.ctrlKey)) {
       const checkedInputElement = this._commentsForm.getElement().querySelector(`.film-details__emoji-item:checked`);
@@ -106,9 +110,5 @@ export default class CommentsController {
         button.disabled = false;
         button.textContent = `Delete`;
       });
-  }
-
-  _onDataChange(card) {
-    this._onDataChangeMain(card);
   }
 }

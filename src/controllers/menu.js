@@ -56,6 +56,12 @@ export default class MenuController {
     this._menu.getElement().addEventListener(`click`, (evt) => this._onFilterLinkClick(evt));
   }
 
+  _setFilmCards(cards) {
+    this._cards = cards;
+    this._renderMenu();
+    this._pageController.show(this._cards.slice().filter(this._activeFilter.METHOD), false);
+  }
+
   _onFilterLinkClick(evt) {
     evt.preventDefault();
 
@@ -131,11 +137,5 @@ export default class MenuController {
         this._statisticsController.show(this._cards);
         break;
     }
-  }
-
-  _setFilmCards(cards) {
-    this._cards = cards;
-    this._renderMenu();
-    this._pageController.show(this._cards.slice().filter(this._activeFilter.METHOD), false);
   }
 }

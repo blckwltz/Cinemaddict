@@ -60,10 +60,10 @@ const renderPage = ((cards) => {
   removeElement(footerElement.querySelector(`.footer__statistics`));
   renderElement(footerElement, statisticsText.getElement());
   pageController.show(cards);
-  searchController.show(cards);
   menuController.show(cards);
 
   if (menuController.getState() === States.SEARCH) {
+    searchController.show(cards);
     pageController.hide();
     menuController.hide();
   }

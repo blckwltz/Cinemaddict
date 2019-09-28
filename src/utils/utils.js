@@ -24,14 +24,17 @@ const removeElement = (element) => {
   }
 };
 const getUserTitle = (amount) => {
-  let title = ``;
+  let title;
+
   if (amount >= UserRating.MILESTONES.FIRST && amount <= UserRating.MILESTONES.SECOND) {
     title = UserRating.TITLES.FIRST;
+    return title;
   } else if (amount >= UserRating.MILESTONES.THIRD && amount <= UserRating.MILESTONES.FOURTH) {
     title = UserRating.TITLES.SECOND;
-  } else if (amount > UserRating.MILESTONES.FIFTH) {
-    title = UserRating.TITLES.THIRD;
+    return title;
   }
+
+  title = UserRating.TITLES.THIRD;
   return title;
 };
 const isATag = (tagName) => tagName === TagNames.A;
@@ -46,9 +49,9 @@ const countDuplicateElements = (list) => {
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
-  } else {
-    throw new Error(`${response.status}: ${response.statusText}`);
   }
+
+  throw new Error(`${response.status}: ${response.statusText}`);
 };
 const toJSON = (response) => {
   return response.json();

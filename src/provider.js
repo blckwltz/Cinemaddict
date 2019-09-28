@@ -16,12 +16,12 @@ export default class Provider {
           cards.map((card) => this._store.setItem({key: card.id, item: ModelCard.toRAW(card)}));
           return cards;
         });
-    } else {
-      const rawCardsMap = this._store.getAll();
-      const rawCards = objectToArray(rawCardsMap);
-      const cards = ModelCard.parseCards(rawCards);
-      return Promise.resolve(cards);
     }
+
+    const rawCardsMap = this._store.getAll();
+    const rawCards = objectToArray(rawCardsMap);
+    const cards = ModelCard.parseCards(rawCards);
+    return Promise.resolve(cards);
   }
 
   syncCards() {
@@ -35,11 +35,11 @@ export default class Provider {
           this._store.setItem({key: card.id, item: ModelCard.toRAW(card)});
           return card;
         });
-    } else {
-      const card = data;
-      this._store.setItem({key: card.id, item: card});
-      return Promise.resolve(ModelCard.parseCard(card));
     }
+
+    const card = data;
+    this._store.setItem({key: card.id, item: card});
+    return Promise.resolve(ModelCard.parseCard(card));
   }
 
   getComments({id}) {
@@ -49,13 +49,13 @@ export default class Provider {
           this._store.setItem({key: id, item: comments.map((comment) => ModelComment.toRAW(comment))});
           return comments;
         });
-    } else {
-      const rawCommentsMap = this._store.getAll();
-      const rawComments = objectToArray(rawCommentsMap);
-      const comments = rawComments.map((rawComment) => {
-        ModelComment.parseComments(rawComment);
-      });
-      return Promise.resolve(comments);
     }
+
+    const rawCommentsMap = this._store.getAll();
+    const rawComments = objectToArray(rawCommentsMap);
+    const comments = rawComments.map((rawComment) => {
+      ModelComment.parseComments(rawComment);
+    });
+    return Promise.resolve(comments);
   }
 }

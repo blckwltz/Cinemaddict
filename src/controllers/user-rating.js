@@ -66,6 +66,11 @@ export default class UserRatingController {
     });
   }
 
+  _setFilmCard(card) {
+    this._card = card;
+    this._renderUserRatingForm();
+  }
+
   _onRatingInputChange(evt) {
     this._userRatingElement.textContent = `Your rate ${evt.target.value}`;
     const errorInput = this._userRatingForm.getElement().querySelector(`.${ErrorClasses.RATING_INPUT}`);
@@ -107,10 +112,5 @@ export default class UserRatingController {
     if (chosenRating) {
       chosenRating.checked = false;
     }
-  }
-
-  _setFilmCard(card) {
-    this._card = card;
-    this._renderUserRatingForm();
   }
 }

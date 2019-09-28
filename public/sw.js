@@ -34,7 +34,7 @@ self.addEventListener(`install`, (evt) => {
           `./images/posters/the-man-with-the-golden-arm.jpg`,
         ]);
       }).catch((err) => {
-      console.error({err});
+        throw new Error(`${err}`);
       }));
 });
 
@@ -50,7 +50,6 @@ self.addEventListener(`fetch`, (evt) => {
         return response ? response : fetch(evt.request);
       })
       .catch((err) => {
-        console.error({err});
-        throw err;
+        throw new Error(`${err}`);
       }));
 });

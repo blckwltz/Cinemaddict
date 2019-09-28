@@ -22,8 +22,7 @@ export default class API {
       body: JSON.stringify(cards),
       headers: new Headers({'Content-Type': `application/json`}),
     })
-      .then(toJSON)
-      .then(ModelCard.parseCards);
+      .then(toJSON);
   }
 
   updateCard({id, data}) {

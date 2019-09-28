@@ -31,6 +31,7 @@ export default class SearchController {
   }
 
   init() {
+    this.hide();
     const searchInput = this._search.getElement().querySelector(`input`);
     searchInput.addEventListener(`keyup`, (evt) => {
       if (evt.target.value.length >= MIN_SEARCH_STRING_LENGTH) {
@@ -41,6 +42,16 @@ export default class SearchController {
 
   _filterCards(cards, query) {
     return cards.slice().filter((card) => (card.title.includes(query) || card.title.toLowerCase().includes(query)));
+  }
+
+  _setFilmCards(cards) {
+    this._cards = cards;
+    const searchInput = this._search.getElement().querySelector(`input`);
+    this._showSearchResult(this._filterCards(this._cards, searchInput.value));
+  }
+
+  _onDataChange(card) {
+    this._onDataChangeMain(card);
   }
 
   _showSearchResult(cards) {
@@ -63,15 +74,5 @@ export default class SearchController {
       this._filmsList.removeElement();
       renderElement(this._container, this._noResult.getElement());
     }
-  }
-
-  _setFilmCards(cards) {
-    this._cards = cards;
-    const searchInput = this._search.getElement().querySelector(`input`);
-    this._showSearchResult(this._filterCards(this._cards, searchInput.value));
-  }
-
-  _onDataChange(card) {
-    this._onDataChangeMain(card);
   }
 }

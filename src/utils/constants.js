@@ -54,10 +54,6 @@ const UserRating = {
     THIRD: `Movie Buff`,
   },
 };
-const Duration = {
-  MIN: 20,
-  MAX: 180,
-};
 const Position = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
@@ -159,4 +155,4 @@ const ErrorClasses = {
   RATING_INPUT: `rating-input-error`,
 };
 
-export {GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, CARDS_STORE_KEY, COMMENTS_STORE_KEY, Emojis, Description, UserRating, Duration, Position, TagNames, ListTitles, Sorting, Actions, Screens, States, Filters, Method, ErrorClasses};
+export {GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, CARDS_STORE_KEY, COMMENTS_STORE_KEY, Emojis, Description, UserRating, Position, TagNames, ListTitles, Sorting, Actions, Screens, States, Filters, Method, ErrorClasses};

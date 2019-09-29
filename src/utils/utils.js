@@ -1,4 +1,4 @@
-import {Description, Position, TagNames, UserRating} from "./constants";
+import {Description, Position, TagNames, UserRating, UserRatingChart} from "./constants";
 
 const trimString = (string) => {
   return string.length < Description.LENGTH.MAX ? string : `${string.slice(0, Description.LENGTH.TO_DISPLAY).trim()}…`;
@@ -23,18 +23,18 @@ const removeElement = (element) => {
     element.remove();
   }
 };
+const isValueInRange = (value, min, max) => {
+  return min <= value && value <= max;
+};
 const getUserTitle = (amount) => {
   let title;
 
-  if (amount >= UserRating.MILESTONES.FIRST && amount <= UserRating.MILESTONES.SECOND) {
-    title = UserRating.TITLES.FIRST;
-    return title;
-  } else if (amount >= UserRating.MILESTONES.THIRD && amount <= UserRating.MILESTONES.FOURTH) {
-    title = UserRating.TITLES.SECOND;
-    return title;
+  for (let key of UserRatingChart.keys()) {
+    if (isValueInRange(amount, ...key)) {
+      title = UserRatingChart.get(key);
+    }
   }
 
-  title = UserRating.TITLES.THIRD;
   return title;
 };
 const isATag = (tagName) => tagName === TagNames.A;
@@ -63,4 +63,4 @@ const objectToArray = (object) => {
   return Object.keys(object).map((id) => object[id]);
 };
 
-export {trimString, createElement, renderElement, removeElement, getUserTitle, isATag, isButtonTag, countDuplicateElements, checkStatus, toJSON, isOnline, objectToArray};
+export {trimString, createElement, renderElement, removeElement, isValueInRange, getUserTitle, isATag, isButtonTag, countDuplicateElements, checkStatus, toJSON, isOnline, objectToArray};

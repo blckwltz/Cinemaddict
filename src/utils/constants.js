@@ -1,5 +1,4 @@
 import moment from "moment";
-import {isValueInRange} from "./utils";
 
 const GENERAL_FILMS_AMOUNT = 5;
 const CATEGORY_FILMS_AMOUNT = 2;

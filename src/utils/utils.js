@@ -1,4 +1,4 @@
-import {Description, Position, TagNames, UserRating, UserRatingChart} from "./constants";
+import {Description, Position, TagNames, UserRatingChart} from "./constants";
 
 const trimString = (string) => {
   return string.length < Description.LENGTH.MAX ? string : `${string.slice(0, Description.LENGTH.TO_DISPLAY).trim()}…`;

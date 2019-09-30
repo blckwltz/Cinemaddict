@@ -5,6 +5,8 @@ const CATEGORY_FILMS_AMOUNT = 2;
 const MIN_SEARCH_STRING_LENGTH = 3;
 const AUTHORIZATION = `Basic eo0w590ik29889a=488939`;
 const END_POINT = `https://htmlacademy-es-9.appspot.com/cinemaddict`;
+const PING_URL = `https://ipv4.icanhazip.com`;
+const PING_TIMEOUT = 10000;
 const CARDS_STORE_KEY = `Cinemaddict Film Cards`;
 const COMMENTS_STORE_KEY = `Cinemaddict Comments`;
 
@@ -160,4 +162,4 @@ const ErrorClasses = {
   RATING_INPUT: `rating-input-error`,
 };
 
-export {GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, CARDS_STORE_KEY, COMMENTS_STORE_KEY, Emojis, Description, UserRating, UserRatingChart, Position, TagNames, ListTitles, Sorting, Actions, Screens, States, Filters, Method, ErrorClasses};
+export {GENERAL_FILMS_AMOUNT, CATEGORY_FILMS_AMOUNT, MIN_SEARCH_STRING_LENGTH, AUTHORIZATION, END_POINT, PING_URL, PING_TIMEOUT, CARDS_STORE_KEY, COMMENTS_STORE_KEY, Emojis, Description, UserRating, UserRatingChart, Position, TagNames, ListTitles, Sorting, Actions, Screens, States, Filters, Method, ErrorClasses};

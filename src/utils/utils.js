@@ -1,4 +1,4 @@
-import {Description, Position, TagNames, UserRatingChart} from "./constants";
+import {PING_URL, PING_TIMEOUT, Description, Position, TagNames, UserRatingChart} from "./constants";
 
 const trimString = (string) => {
   return string.length < Description.LENGTH.MAX ? string : `${string.slice(0, Description.LENGTH.TO_DISPLAY).trim()}…`;
@@ -29,7 +29,7 @@ const isValueInRange = (value, min, max) => {
 const getUserTitle = (amount) => {
   let title;
 
-  for (let key of UserRatingChart.keys()) {
+  for (const key of UserRatingChart.keys()) {
     if (isValueInRange(amount, ...key)) {
       title = UserRatingChart.get(key);
     }
@@ -57,7 +57,16 @@ const toJSON = (response) => {
   return response.json();
 };
 const isOnline = () => {
-  return window.navigator.onLine;
+  let online;
+  fetch(`${PING_URL}?_t=${PING_TIMEOUT}`)
+    .then(() => {
+      online = true;
+      return online;
+    })
+    .catch(() => {
+      online = false;
+      return online;
+    });
 };
 const objectToArray = (object) => {
   return Object.keys(object).map((id) => object[id]);
